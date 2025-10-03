@@ -28,7 +28,7 @@ export default function Home() {
   useEffect(() => {
     const loadInitialFile = async () => {
       setIsLoading(true);
-      const filePath = '/Métricas Agosto.xlsx';
+      const filePath = '/Métricas Agosto 2025.xlsx';
       try {
         const response = await fetch(filePath);
         if (!response.ok) {
@@ -40,7 +40,7 @@ export default function Home() {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null });
         
-        handleData(jsonData, 'Métricas Agosto.xlsx');
+        handleData(jsonData, 'Métricas Agosto 2025.xlsx');
 
       } catch (error: any) {
         toast({
@@ -53,7 +53,7 @@ export default function Home() {
     };
 
     loadInitialFile();
-  }, []);
+  }, [toast]);
 
   const handleData = (parsedJson: any[], name: string) => {
     try {
@@ -113,7 +113,7 @@ export default function Home() {
     // Since we want to reload the initial file on reset, we can call useEffect's logic again.
     const loadInitialFile = async () => {
       setIsLoading(true);
-      const filePath = '/Métricas Agosto.xlsx';
+      const filePath = '/Métricas Agosto 2025.xlsx';
       try {
         const response = await fetch(filePath);
         if (!response.ok) {
@@ -124,7 +124,7 @@ export default function Home() {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null });
-        handleData(jsonData, 'Métricas Agosto.xlsx');
+        handleData(jsonData, 'Métricas Agosto 2025.xlsx');
       } catch (error: any) {
         toast({
           variant: "destructive",
