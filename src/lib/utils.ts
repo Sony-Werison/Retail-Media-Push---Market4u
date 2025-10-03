@@ -36,17 +36,24 @@ export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN 
     keys.forEach(key => {
       const rawItem = row[key] as string;
       if (rawItem && rawItem.trim() !== '' && rawItem.trim().toLowerCase() !== 'n/a' && rawItem.trim() !== '-') {
-        const cleanedName = cleanItemName(rawItem).toLowerCase();
+        const cleanedName = cleanItemName(rawItem);
         
         let finalName = cleanedName;
         if (translationMap) {
-          finalName = translationMap[cleanedName] || cleanedName;
+          // Find the key in the translation map, ignoring case.
+          const translationKey = Object.keys(translationMap).find(
+            (k) => k.toLowerCase() === cleanedName.toLowerCase()
+          );
+          if (translationKey) {
+            finalName = translationMap[translationKey];
+          }
         }
 
         if (finalName) {
           counts.set(finalName, (counts.get(finalName) || 0) + 1);
-          totalValue++;
         }
+        // We count every valid entry to calculate percentage correctly
+        totalValue++;
       }
     });
   });
