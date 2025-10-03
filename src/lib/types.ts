@@ -1,0 +1,48 @@
+export interface RowData {
+  ID: string;
+  NOME: string;
+  PDX_ENDERECO: string;
+  PDX_NUMERO: string;
+  PDX_BAIRRO: string;
+  PDX_CIDADE: string;
+  PDX_ESTADO: string;
+  PDX_CEP: string;
+  PDX_LAT: number;
+  PDX_LNG: number;
+  'Alcance Geral Target': number;
+  'Frequência Média': number;
+  'Impactos Gerais': number;
+  'Gênero (Masculino)': number;
+  'Gênero (Feminino)': number;
+  'Faixa Etária (18_24)': number;
+  'Faixa Etária (25_29)': number;
+  'Faixa Etária (30_39)': number;
+  'Faixa Etária (40_49)': number;
+  'Faixa Etária (50_59)': number;
+  'Faixa Etária (60_69)': number;
+  'Faixa Etária (70+)': number;
+  'Nível Socioeconômico (A)': number;
+  'Nível Socioeconômico (B)': number;
+  'Nível Socioeconômico (C)': number;
+  'Nível Socioeconômico (D)': number;
+  'Nível Socioeconômico (E)': number;
+  'Plataforma (ios)': number;
+  'Plataforma (Android)': number;
+  '#1 Marca': string;
+  '#2 Marca': string;
+  '#3 Marca': string;
+  '#1 Modelo': string;
+  '#2 Modelo': string;
+  '#3 Modelo': string;
+  '#1 Operadora': string;
+  '#2 Operadora': string;
+  '#3 Operadora': string;
+  '#1 Comportamento Offline': string;
+  '#2 Comportamento Offline': string;
+  '#3 Comportamento Offline': string;
+  '#1 Uso de Apps': string;
+  '#2 Uso de Apps': string;
+  '#3 Uso de Apps': string;
+}
+
+export type DemographicCategory = 'Faixa Etária' | 'Nível Socioeconômico';
