@@ -6,6 +6,7 @@ import { TopLists } from "./top-lists";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React, { useMemo } from "react";
 import { GeoMap } from "./geo-map";
+import { LocationChart } from "./location-chart";
 import { parseValue } from "@/lib/utils";
 import { interestTranslations, appUsageTranslations } from "@/lib/translations";
 
@@ -56,12 +57,16 @@ export function MainDashboard({ data }: MainDashboardProps) {
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <GenderChart data={data} />
       </div>
+
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
+        <LocationChart data={data} />
+      </div>
       
-      <div className="col-span-12 md:col-span-6 lg:col-span-6">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <AgeChart data={data} />
       </div>
       
-      <div className="col-span-12 md:col-span-6 lg:col-span-6">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <SocioEconomicChart data={data} />
       </div>
 
