@@ -42,11 +42,11 @@ export function AgeChart({ data }: AgeChartProps) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Age Range Distribution</CardTitle>
-        <CardDescription>Audience breakdown by age groups.</CardDescription>
+        <CardTitle>Distribuição por Faixa Etária</CardTitle>
+        <CardDescription>Análise do público por grupos de idade.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />

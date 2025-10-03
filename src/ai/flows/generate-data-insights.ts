@@ -12,12 +12,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateDataInsightsInputSchema = z.object({
-  csvData: z.string().describe('CSV data containing location, demographics, and brand preferences.'),
+  csvData: z.string().describe('Dados em CSV contendo localização, demografia e preferências de marca.'),
 });
 export type GenerateDataInsightsInput = z.infer<typeof GenerateDataInsightsInputSchema>;
 
 const GenerateDataInsightsOutputSchema = z.object({
-  insights: z.string().describe('Key insights and summaries from the uploaded data.'),
+  insights: z.string().describe('Principais insights e resumos dos dados carregados.'),
 });
 export type GenerateDataInsightsOutput = z.infer<typeof GenerateDataInsightsOutputSchema>;
 
@@ -29,18 +29,18 @@ const prompt = ai.definePrompt({
   name: 'generateDataInsightsPrompt',
   input: {schema: GenerateDataInsightsInputSchema},
   output: {schema: GenerateDataInsightsOutputSchema},
-  prompt: `You are an expert data analyst tasked with extracting key insights from customer data.
+  prompt: `Você é um analista de dados especialista encarregado de extrair insights importantes de dados de clientes.
 
-You will be provided with CSV data containing location, demographics, and brand preferences.
+Você receberá dados em CSV contendo localização, demografia e preferências de marca.
 
-Your goal is to identify the most significant relationships between these factors and provide a concise summary of your findings.
+Seu objetivo é identificar as relações mais significativas entre esses fatores e fornecer um resumo conciso de suas descobertas.
 
-Here is the CSV data:
+Aqui estão os dados CSV:
 {{{csvData}}}
 
-Focus on identifying patterns and trends that would be valuable for marketing and business strategy.
+Concentre-se em identificar padrões e tendências que seriam valiosos para a estratégia de marketing и negócios.
 
-Output the insights in a clear and easily understandable format.
+Produza os insights em um formato claro e de fácil compreensão.
 `,
 });
 

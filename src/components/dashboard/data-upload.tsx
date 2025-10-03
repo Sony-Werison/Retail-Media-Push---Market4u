@@ -32,7 +32,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
       const parsedData = data.map((row: any): RowData => {
         const requiredKeys = ['PDX_LAT', 'PDX_LNG'];
         for(const key of requiredKeys) {
-            if(!(key in row)) throw new Error(`Missing required column: ${key}`);
+            if(!(key in row)) throw new Error(`Coluna obrigatória ausente: ${key}`);
         }
 
         return {
@@ -64,8 +64,8 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Data Processing Error",
-        description: error.message || "Could not process the file data. Please check the file format.",
+        title: "Erro no Processamento de Dados",
+        description: error.message || "Não foi possível processar os dados do arquivo. Verifique o formato do arquivo.",
       });
       onError();
     }
@@ -77,8 +77,8 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
     if (!validFileTypes.includes(file.type)) {
       toast({
         variant: "destructive",
-        title: "Invalid File Type",
-        description: "Please upload a valid CSV or XLSX file.",
+        title: "Tipo de Arquivo Inválido",
+        description: "Faça o upload de um arquivo CSV ou XLSX válido.",
       });
       onError();
       return;
@@ -98,7 +98,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
                 if (results.errors.length > 0) {
                   toast({
                     variant: "destructive",
-                    title: "Error Parsing CSV",
+                    title: "Erro ao Analisar CSV",
                     description: results.errors.map(e => e.message).join(', '),
                   });
                   onError();
@@ -151,8 +151,8 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
   return (
     <Card className="w-full text-center">
       <CardHeader>
-        <CardTitle>Upload Your Data</CardTitle>
-        <CardDescription>Drag and drop your CSV or XLSX file here or click to browse.</CardDescription>
+        <CardTitle>Carregue Seus Dados</CardTitle>
+        <CardDescription>Arraste e solte seu arquivo CSV ou XLSX aqui ou clique para procurar.</CardDescription>
       </CardHeader>
       <CardContent>
         <div
@@ -169,15 +169,15 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
             {isLoading ? (
               <>
                 <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                <p className="text-muted-foreground">Processing your file...</p>
+                <p className="text-muted-foreground">Processando seu arquivo...</p>
               </>
             ) : (
                 <>
                 <UploadCloud className="h-12 w-12 text-muted-foreground group-hover:text-primary" />
                 <p className="text-muted-foreground">
-                    <span className="text-primary font-semibold">Click to upload</span> or drag and drop
+                    <span className="text-primary font-semibold">Clique para carregar</span> ou arraste e solte
                 </p>
-                <p className="text-xs text-muted-foreground">CSV or XLSX files only</p>
+                <p className="text-xs text-muted-foreground">Apenas arquivos CSV ou XLSX</p>
                 <input
                     id="file-upload"
                     type="file"
@@ -186,7 +186,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
                     onChange={(e) => e.target.files && processFile(e.target.files[0])}
                 />
                  <Button asChild variant="outline" size="sm">
-                    <label htmlFor="file-upload">Browse File</label>
+                    <label htmlFor="file-upload">Procurar Arquivo</label>
                 </Button>
                 </>
             )}

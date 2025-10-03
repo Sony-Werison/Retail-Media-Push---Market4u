@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import type { RowData } from "@/lib/types";
 import { aggregateAndSort } from "@/lib/utils";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 
 type TopListsProps = {
@@ -13,7 +13,7 @@ type TopListsProps = {
 };
 
 export function TopLists({ data, title, keys }: TopListsProps) {
-  const topItems = useMemo(() => aggregateAndSort(data, keys, 5), [data, keys]);
+  const { topItems, totalCount } = useMemo(() => aggregateAndSort(data, keys, 5), [data, keys]);
 
   return (
     <Card className="h-full">
@@ -29,12 +29,12 @@ export function TopLists({ data, title, keys }: TopListsProps) {
                     <Badge variant="outline" className="w-6 h-6 flex items-center justify-center p-0">{index + 1}</Badge>
                     <span className="font-medium capitalize">{item.name.toLowerCase().replace(/_/g, ' ')}</span>
                 </div>
-                <span className="font-mono text-sm text-muted-foreground">{item.value.toLocaleString('pt-BR')}</span>
+                <span className="font-mono text-sm text-muted-foreground">{((item.value / totalCount) * 100).toFixed(1)}%</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">No data available for this category.</p>
+          <p className="text-sm text-muted-foreground text-center py-8">Nenhum dado disponível para esta categoria.</p>
         )}
       </CardContent>
     </Card>

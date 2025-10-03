@@ -23,11 +23,11 @@ export function AIAssistant({ csvData }: AIAssistantProps) {
       const result = await generateDataInsights({ csvData });
       setInsights(result.insights);
     } catch (error) {
-      console.error("Error generating insights:", error);
+      console.error("Erro ao gerar insights:", error);
       toast({
         variant: "destructive",
-        title: "AI Assistant Error",
-        description: "Could not generate insights. Please try again later.",
+        title: "Erro no Assistente de IA",
+        description: "Não foi possível gerar insights. Por favor, tente novamente mais tarde.",
       });
     } finally {
       setLoading(false);
@@ -39,17 +39,17 @@ export function AIAssistant({ csvData }: AIAssistantProps) {
       <CardHeader>
         <div className="flex items-center gap-2">
             <Wand2 className="w-6 h-6 text-primary" />
-            <CardTitle>AI Insights</CardTitle>
+            <CardTitle>Insights de IA</CardTitle>
         </div>
         <CardDescription>
-          Generate key insights from your data automatically.
+          Gere insights importantes de seus dados automaticamente.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-4">
         {loading ? (
           <>
             <Loader2 className="w-10 h-10 animate-spin text-primary" />
-            <p className="text-muted-foreground">Analyzing data and generating insights...</p>
+            <p className="text-muted-foreground">Analisando dados e gerando insights...</p>
           </>
         ) : insights ? (
           <div className="text-left w-full h-64 overflow-y-auto p-4 bg-muted/50 rounded-lg">
@@ -58,14 +58,14 @@ export function AIAssistant({ csvData }: AIAssistantProps) {
         ) : (
           <>
             <Sparkles className="w-10 h-10 text-muted-foreground" />
-            <p className="text-muted-foreground">Click the button to reveal powerful insights about your audience.</p>
+            <p className="text-muted-foreground">Clique no botão para revelar insights poderosos sobre seu público.</p>
           </>
         )}
       </CardContent>
       <div className="p-6 pt-0">
         <Button onClick={handleGenerateInsights} disabled={loading} className="w-full">
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-            {loading ? "Generating..." : "Generate Insights"}
+            {loading ? "Gerando..." : "Gerar Insights"}
         </Button>
       </div>
     </Card>

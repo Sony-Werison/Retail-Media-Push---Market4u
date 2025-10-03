@@ -43,11 +43,11 @@ export function PlatformChart({ data }: PlatformChartProps) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Platform Distribution</CardTitle>
-        <CardDescription>Breakdown by mobile operating system.</CardDescription>
+        <CardTitle>Distribuição por Plataforma</CardTitle>
+        <CardDescription>Análise por sistema operacional móvel.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                     <Tooltip

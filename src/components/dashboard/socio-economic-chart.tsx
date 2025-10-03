@@ -39,11 +39,11 @@ export function SocioEconomicChart({ data }: SocioEconomicChartProps) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Socio-Economic Level</CardTitle>
-        <CardDescription>Audience breakdown by socio-economic class.</CardDescription>
+        <CardTitle>Nível Socioeconômico</CardTitle>
+        <CardDescription>Análise do público por classe socioeconômica.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={chartData}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" />
