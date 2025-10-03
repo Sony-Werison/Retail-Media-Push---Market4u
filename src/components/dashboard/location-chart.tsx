@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 
@@ -31,15 +31,16 @@ export function LocationChart({ data }: LocationChartProps) {
 
     return Object.entries(countsByState)
       .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 15); // Show top 15 states
       
   }, [data]);
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-[425px] flex flex-col">
       <CardHeader>
         <CardTitle>Distribuição Geográfica por Estado</CardTitle>
-        <CardDescription>Contagem de pontos de dados (PDX) em cada estado.</CardDescription>
+        <CardDescription>Contagem de pontos de dados (PDX) nos 15 principais estados.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer config={chartConfig} className="h-full w-full">
@@ -47,12 +48,16 @@ export function LocationChart({ data }: LocationChartProps) {
               <BarChart data={chartData} layout="vertical" margin={{ left: 10, right: 30 }}>
                   <CartesianGrid horizontal={false} strokeDasharray="3 3" />
                   <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} />
+                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} interval={0} />
                   <Tooltip
                       cursor={{fill: 'hsl(var(--muted))'}}
                       content={<ChartTooltipContent indicator="dot" />}
                   />
-                  <Bar dataKey="count" name="PDXs" fill="var(--color-count)" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" name="PDXs" radius={[0, 4, 4, 0]}>
+                     {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill="var(--color-count)" />
+                    ))}
+                  </Bar>
               </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
