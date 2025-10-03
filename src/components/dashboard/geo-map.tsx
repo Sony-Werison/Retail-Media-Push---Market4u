@@ -76,7 +76,7 @@ export function GeoMap({ data }: GeoMapProps) {
         </Select>
       </CardHeader>
       <CardContent className="flex-1 rounded-b-lg overflow-hidden p-0">
-          <MapContainer center={[center.lat, center.lng]} zoom={10} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
+          <MapContainer key={JSON.stringify(center)} center={[center.lat, center.lng]} zoom={10} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
               <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

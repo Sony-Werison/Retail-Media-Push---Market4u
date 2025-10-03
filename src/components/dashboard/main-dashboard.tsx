@@ -12,7 +12,7 @@ import React from "react";
 type MainDashboardProps = {
   data: RowData[];
   csvString: string;
-  GeoMapComponent: React.ElementType<{ data: RowData[] }>;
+  GeoMapComponent: React.ComponentType<{ data: RowData[] }>;
 };
 
 export function MainDashboard({ data, csvString, GeoMapComponent }: MainDashboardProps) {
