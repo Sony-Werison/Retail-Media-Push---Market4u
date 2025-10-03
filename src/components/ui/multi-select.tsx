@@ -87,7 +87,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
         onChange(newSelected);
     };
 
-    const handleClear = (e: React.MouseEvent) => {
+    const handleClear = (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation();
       onChange([]);
     };
@@ -117,19 +117,21 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                                     className="m-1"
                                 >
                                     {option?.label}
-                                    <XCircle
+                                    <div
                                         className="ml-2 h-4 w-4 cursor-pointer"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleSelect(value);
                                         }}
-                                    />
+                                    >
+                                        <XCircle className="h-4 w-4"/>
+                                    </div>
                                 </Badge>
                             );
                         })}
                     </div>
-                    <div className="flex items-center">
-                      <XIcon className="h-4 w-4 cursor-pointer" onClick={handleClear} />
+                    <div className="flex items-center" onClick={handleClear}>
+                      <XIcon className="h-4 w-4 cursor-pointer" />
                       <Separator orientation="vertical" className="h-4 mx-2" />
                       <ChevronDown className="h-4 w-4 opacity-50" />
                     </div>
@@ -177,7 +179,9 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   <CommandSeparator />
                   <CommandGroup>
                     <CommandItem
-                      onSelect={handleClear}
+                      onSelect={(e) => {
+                        onChange([]);
+                      }}
                       className="justify-center text-center"
                     >
                       Limpar seleção
