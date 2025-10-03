@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
+import { ChartTooltipContent, ChartContainer, ChartLegendContent } from '@/components/ui/chart';
 
 type GenderChartProps = {
   data: RowData[];
@@ -35,20 +35,20 @@ export function GenderChart({ data }: GenderChartProps) {
     );
 
     return [
-        { name: 'Masculino', value: totals.male, fill: chartConfig.Masculino.color },
-        { name: 'Feminino', value: totals.female, fill: chartConfig.Feminino.color }
+        { name: 'Masculino', value: totals.male, fill: 'var(--color-Masculino)' },
+        { name: 'Feminino', value: totals.female, fill: 'var(--color-Feminino)' }
     ];
   }, [data]);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Distribuição por Gênero</CardTitle>
         <CardDescription>Análise do público por gênero.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[250px] w-full">
-          <ResponsiveContainer width="100%" height={250}>
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square h-full">
+          <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                   <Tooltip
                       cursor={{fill: 'hsl(var(--muted))'}}
@@ -65,10 +65,11 @@ export function GenderChart({ data }: GenderChartProps) {
                     paddingAngle={2}
                     labelLine={false}
                     label={({ cx, cy, midAngle, outerRadius, percent, payload }) => {
-                        const radius = outerRadius * 1.15;
+                        const radius = outerRadius * 1.25;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                         const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                        const isDarkSlice = payload.fill === chartConfig.Masculino.color;
+                        const isDarkSlice = payload.fill === 'var(--color-Masculino)';
+                        
                         return (
                           <text 
                             x={x} 
@@ -87,6 +88,7 @@ export function GenderChart({ data }: GenderChartProps) {
                         <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
+                  <Legend content={<ChartLegendContent />} />
               </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
