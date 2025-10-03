@@ -10,10 +10,11 @@ type TopListsProps = {
   data: RowData[];
   title: string;
   keys: (keyof RowData)[];
+  translationMap?: { [key: string]: string };
 };
 
-export function TopLists({ data, title, keys }: TopListsProps) {
-  const { topItems } = useMemo(() => aggregateAndSort(data, keys, 5), [data, keys]);
+export function TopLists({ data, title, keys, translationMap }: TopListsProps) {
+  const { topItems } = useMemo(() => aggregateAndSort(data, keys, 5, translationMap), [data, keys, translationMap]);
 
   return (
     <Card className="h-full">
@@ -27,7 +28,7 @@ export function TopLists({ data, title, keys }: TopListsProps) {
               <li key={item.name} className="flex justify-between items-center gap-4">
                 <div className="flex items-center gap-3">
                     <Badge variant="outline" className="w-6 h-6 flex items-center justify-center p-0">{index + 1}</Badge>
-                    <span className="font-medium capitalize">{item.name.toLowerCase().replace(/_/g, ' ')}</span>
+                    <span className="font-medium capitalize">{item.name.toLowerCase()}</span>
                 </div>
                 <span className="font-mono text-sm text-muted-foreground">{item.percentage.toFixed(2)}%</span>
               </li>

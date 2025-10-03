@@ -5,11 +5,10 @@ import { GenderChart } from "./gender-chart";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { LocationChart } from "./location-chart";
 import { parseValue } from "@/lib/utils";
-
-type FilterType = 'gender' | 'age' | 'socio';
+import { interestTranslations, appUsageTranslations } from "@/lib/translations";
 
 type MainDashboardProps = {
   data: RowData[];
@@ -17,41 +16,9 @@ type MainDashboardProps = {
 };
 
 export function MainDashboard({ data, csvString }: MainDashboardProps) {
-  const [activeFilters, setActiveFilters] = useState<Record<FilterType, string | null>>({
-    gender: null,
-    age: null,
-    socio: null,
-  });
-
-  const handleFilterChange = (type: FilterType, value: string | null) => {
-    setActiveFilters(prev => ({ ...prev, [type]: value }));
-  };
-
-  const filteredData = useMemo(() => {
-    const { gender, age, socio } = activeFilters;
-    if (!gender && !age && !socio) {
-      return data;
-    }
-    
-    return data.filter(row => {
-      if (gender) {
-        const genderKey = `Gênero (${gender})` as keyof RowData;
-        if (!row[genderKey] || parseValue(row[genderKey]) === 0) return false;
-      }
-      if (age) {
-        const ageKey = `Faixa Etária (${age.replace('-', '_')})` as keyof RowData;
-         if (!row[ageKey] || parseValue(row[ageKey]) === 0) return false;
-      }
-      if (socio) {
-        const socioKey = `Nível Socioeconômico (${socio})` as keyof RowData;
-        if (!row[socioKey] || parseValue(row[socioKey]) === 0) return false;
-      }
-      return true;
-    });
-  }, [data, activeFilters]);
   
-  const totalImpacts = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [filteredData]);
-  const totalReach = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [filteredData]);
+  const totalImpacts = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [data]);
+  const totalReach = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [data]);
   const avgFrequency = useMemo(() => (totalReach > 0 ? totalImpacts / totalReach : 0), [totalImpacts, totalReach]);
   
   return (
@@ -85,7 +52,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       </Card>
 
       <div className="col-span-12 lg:col-span-8 row-span-2">
-        <LocationChart data={filteredData} />
+        <LocationChart data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
@@ -93,47 +60,45 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <GenderChart 
-          data={filteredData} 
-          filter={activeFilters.gender}
-          onFilterChange={(value) => handleFilterChange('gender', value)}
-        />
+        <GenderChart data={data} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
-        <AgeChart 
-          data={filteredData} 
-          filter={activeFilters.age}
-          onFilterChange={(value) => handleFilterChange('age', value)}
-        />
+        <AgeChart data={data} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
-        <SocioEconomicChart 
-          data={filteredData}
-          filter={activeFilters.socio}
-          onFilterChange={(value) => handleFilterChange('socio', value)}
-        />
+        <SocioEconomicChart data={data} />
       </div>
 
        <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={filteredData} title="Top Marcas" keys={['#1 Marca', '#2 Marca', '#3 Marca']} />
+        <TopLists data={data} title="Top Marcas" keys={['#1 Marca', '#2 Marca', '#3 Marca']} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={filteredData} title="Top Modelos" keys={['#1 Modelo', '#2 Modelo', '#3 Modelo']} />
+        <TopLists data={data} title="Top Modelos" keys={['#1 Modelo', '#2 Modelo', '#3 Modelo']} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={filteredData} title="Top Operadoras" keys={['#1 Operadora', '#2 Operadora', '#3 Operadora']} />
+        <TopLists data={data} title="Top Operadoras" keys={['#1 Operadora', '#2 Operadora', '#3 Operadora']} />
       </div>
 
       <div className="col-span-12 md:col-span-6">
-        <TopLists data={filteredData} title="Perfil de Interesses" keys={['#1 Comportamento Offline', '#2 Comportamento Offline', '#3 Comportamento Offline']} />
+        <TopLists 
+          data={data} 
+          title="Perfil de Interesses" 
+          keys={['#1 Comportamento Offline', '#2 Comportamento Offline', '#3 Comportamento Offline']}
+          translationMap={interestTranslations} 
+        />
       </div>
       
       <div className="col-span-12 md:col-span-6">
-        <TopLists data={filteredData} title="Uso de Apps" keys={['#1 Uso de Apps', '#2 Uso de Apps', '#3 Uso de Apps']} />
+        <TopLists 
+          data={data} 
+          title="Uso de Apps" 
+          keys={['#1 Uso de Apps', '#2 Uso de Apps', '#3 Uso de Apps']}
+          translationMap={appUsageTranslations}
+        />
       </div>
 
     </div>

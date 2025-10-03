@@ -13,8 +13,8 @@ export function parseValue(value: string | number | null | undefined): number {
     }
     if (typeof value === 'string') {
         const cleanedString = value
-            .replace(/\.(?=\d{3})/g, '') // Remove pontos de milhar
-            .replace(',', '.')           // Substitui vírgula decimal por ponto
+            .replace(/\.(?=\d{3})/g, '') 
+            .replace(',', '.')           
             .trim();
         const num = parseFloat(cleanedString);
         return isNaN(num) ? 0 : num;
@@ -23,29 +23,37 @@ export function parseValue(value: string | number | null | undefined): number {
 }
 
 
-// Cleans a string by removing any trailing content in parentheses.
-// e.g., "Apple (25,00%)" becomes "Apple"
 function cleanItemName(name: string): string {
     if (typeof name !== 'string') return '';
     return name.split('(')[0].trim();
 }
 
-export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN = 5): { topItems: { name: string; value: number; percentage: number }[], totalCount: number } => {
+export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN = 5, translationMap?: { [key: string]: string }): { topItems: { name: string; value: number; percentage: number }[], totalCount: number } => {
   const counts = new Map<string, number>();
   let totalCount = 0;
 
   data.forEach(row => {
+    let rowHasValidEntry = false;
     keys.forEach(key => {
       const rawItem = row[key] as string;
       if (rawItem && rawItem.trim() !== '' && rawItem.trim().toLowerCase() !== 'n/a' && rawItem.trim() !== '-') {
-        const itemName = cleanItemName(rawItem);
-        if (itemName) {
-            const currentCount = (counts.get(itemName) || 0) + 1;
-            counts.set(itemName, currentCount);
+        const cleanedName = cleanItemName(rawItem).toLowerCase();
+        
+        let finalName = cleanedName;
+        if (translationMap) {
+          finalName = translationMap[cleanedName] || cleanedName;
         }
-        totalCount++;
+
+        if (finalName) {
+          const currentCount = (counts.get(finalName) || 0) + 1;
+          counts.set(finalName, currentCount);
+          rowHasValidEntry = true;
+        }
       }
     });
+    if(rowHasValidEntry) {
+        totalCount++;
+    }
   });
   
   if (totalCount === 0) {

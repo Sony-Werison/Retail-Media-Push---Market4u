@@ -5,12 +5,9 @@ import type { RowData } from '@/lib/types';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
-import { FilterControls } from './filter-controls';
 
 type AgeChartProps = {
   data: RowData[];
-  filter: string | null;
-  onFilterChange: (filter: string | null) => void;
 };
 
 const ageKeys: (keyof RowData)[] = [
@@ -30,7 +27,7 @@ const chartConfig = {
   },
 };
 
-export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
+export function AgeChart({ data }: AgeChartProps) {
   const { chartData } = useMemo(() => {
     if (!data) return { chartData: [] };
     
@@ -49,37 +46,18 @@ export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
     return { chartData };
   }, [data]);
 
-  const handleBarClick = (payload: any) => {
-    if (payload && payload.activePayload && payload.activePayload.length > 0) {
-      const clickedBar = payload.activePayload[0].payload;
-      if (clickedBar.name === filter) {
-        onFilterChange(null);
-      } else {
-        onFilterChange(clickedBar.name);
-      }
-    }
-  };
-
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Distribuição por Faixa Etária</CardTitle>
         <CardDescription>
-          <FilterControls 
-            filterType='Faixa Etária'
-            activeFilter={filter}
-            onClearFilter={() => onFilterChange(null)}
-            defaultDescription='Análise do público por grupos de idade.'
-          />
+          Análise do público por grupos de idade.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height={300}>
-              <BarChart 
-                data={chartData}
-                onClick={handleBarClick}
-              >
+              <BarChart data={chartData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                   <YAxis tickFormatter={(value) => `${value.toFixed(0)}%`}/>
@@ -92,10 +70,6 @@ export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
                       <Cell 
                         key={`cell-${entry.name}`} 
                         fill="var(--color-percentage)"
-                        style={{
-                          cursor: 'pointer',
-                          opacity: filter === null || filter === entry.name ? 1 : 0.4
-                        }}
                       />
                     ))}
                   </Bar>

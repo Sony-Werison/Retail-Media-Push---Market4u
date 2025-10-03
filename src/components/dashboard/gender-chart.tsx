@@ -5,12 +5,9 @@ import type { RowData } from '@/lib/types';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer, ChartLegendContent } from '@/components/ui/chart';
-import { FilterControls } from './filter-controls';
 
 type GenderChartProps = {
   data: RowData[];
-  filter: string | null;
-  onFilterChange: (filter: string | null) => void;
 };
 
 const chartConfig = {
@@ -24,7 +21,7 @@ const chartConfig = {
   },
 };
 
-export function GenderChart({ data, filter, onFilterChange }: GenderChartProps) {
+export function GenderChart({ data }: GenderChartProps) {
   const chartData = useMemo(() => {
     if (!data) return [];
     
@@ -43,27 +40,12 @@ export function GenderChart({ data, filter, onFilterChange }: GenderChartProps) 
     ];
   }, [data]);
 
-  const handlePieClick = (payload: any) => {
-    if (payload && payload.name) {
-      if (payload.name === filter) {
-        onFilterChange(null);
-      } else {
-        onFilterChange(payload.name);
-      }
-    }
-  };
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Distribuição por Gênero</CardTitle>
         <CardDescription>
-          <FilterControls 
-            filterType='Gênero'
-            activeFilter={filter}
-            onClearFilter={() => onFilterChange(null)}
-            defaultDescription='Análise do público por gênero.'
-          />
+          Análise do público por gênero.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -84,12 +66,10 @@ export function GenderChart({ data, filter, onFilterChange }: GenderChartProps) 
                     outerRadius={80}
                     paddingAngle={2}
                     labelLine={false}
-                    onClick={handlePieClick}
                     label={({ cx, cy, midAngle, outerRadius, percent, payload }) => {
                         const radius = outerRadius * 1.35;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                         const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                        const isActive = filter === payload.name;
                         
                         return (
                           <text 
@@ -99,7 +79,6 @@ export function GenderChart({ data, filter, onFilterChange }: GenderChartProps) 
                             textAnchor={x > cx ? 'start' : 'end'} 
                             dominantBaseline="central"
                             className="text-sm"
-                            style={{ fontWeight: isActive ? 'bold' : 'normal' }}
                           >
                             {`${(percent * 100).toFixed(1)}%`}
                           </text>
@@ -110,10 +89,6 @@ export function GenderChart({ data, filter, onFilterChange }: GenderChartProps) 
                         <Cell 
                           key={`cell-${entry.name}`} 
                           fill={entry.fill}
-                          style={{
-                            cursor: 'pointer',
-                            opacity: filter === null || filter === entry.name ? 1 : 0.4
-                          }}
                         />
                     ))}
                   </Pie>

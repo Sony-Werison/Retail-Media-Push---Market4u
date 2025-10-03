@@ -5,12 +5,9 @@ import type { RowData } from '@/lib/types';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
-import { FilterControls } from './filter-controls';
 
 type SocioEconomicChartProps = {
   data: RowData[];
-  filter: string | null;
-  onFilterChange: (filter: string | null) => void;
 };
 
 const seKeys: (keyof RowData)[] = [
@@ -28,7 +25,7 @@ const chartConfig = {
   },
 };
 
-export function SocioEconomicChart({ data, filter, onFilterChange }: SocioEconomicChartProps) {
+export function SocioEconomicChart({ data }: SocioEconomicChartProps) {
   const chartData = useMemo(() => {
     if (!data) return [];
     
@@ -46,35 +43,18 @@ export function SocioEconomicChart({ data, filter, onFilterChange }: SocioEconom
 
   }, [data]);
 
-  const handleBarClick = (payload: any) => {
-    if (payload && payload.activePayload && payload.activePayload.length > 0) {
-      const clickedBar = payload.activePayload[0].payload;
-      if (clickedBar.name === filter) {
-        onFilterChange(null);
-      } else {
-        onFilterChange(clickedBar.name);
-      }
-    }
-  };
-
-
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Nível Socioeconômico</CardTitle>
         <CardDescription>
-          <FilterControls 
-            filterType='Classe'
-            activeFilter={filter}
-            onClearFilter={() => onFilterChange(null)}
-            defaultDescription='Análise do público por classe socioeconômica.'
-          />
+          Análise do público por classe socioeconômica.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData} onClick={handleBarClick}>
+                <BarChart data={chartData}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" />
                     <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                     <YAxis tickFormatter={(value) => `${value.toFixed(0)}%`}/>
@@ -87,10 +67,6 @@ export function SocioEconomicChart({ data, filter, onFilterChange }: SocioEconom
                         <Cell 
                           key={`cell-${entry.name}`} 
                           fill="var(--color-percentage)"
-                          style={{
-                            cursor: 'pointer',
-                            opacity: filter === null || filter === entry.name ? 1 : 0.4
-                          }}
                         />
                       ))}
                     </Bar>
