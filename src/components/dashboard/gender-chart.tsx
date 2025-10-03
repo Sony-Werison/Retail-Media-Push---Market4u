@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { ChartTooltipContent, ChartContainer, ChartLegendContent } from '@/components/ui/chart';
+import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 
 type GenderChartProps = {
   data: RowData[];
@@ -17,7 +17,7 @@ const chartConfig = {
   },
   Feminino: {
     label: "Feminino",
-    color: "hsl(var(--chart-2))", 
+    color: "hsl(var(--accent))", 
   },
 };
 
@@ -112,7 +112,6 @@ export function GenderChart({ data }: GenderChartProps) {
                         />
                     ))}
                   </Pie>
-                  <Legend content={<ChartLegendContent />} />
               </PieChart>
           </ResponsiveContainer>
         </ChartContainer>
