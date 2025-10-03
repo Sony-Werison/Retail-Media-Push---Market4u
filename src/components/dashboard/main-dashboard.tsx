@@ -55,7 +55,7 @@ export function MainDashboard({ data }: MainDashboardProps) {
         </CardContent>
       </Card>
 
-      <div className="col-span-12 lg:col-span-8">
+      <div className="col-span-12 lg:col-span-8 row-span-2">
         <MapChart data={data} />
       </div>
 
