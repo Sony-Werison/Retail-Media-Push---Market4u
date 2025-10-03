@@ -61,11 +61,6 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
         </CardContent>
       </Card>
 
-      <div className="col-span-12 lg:col-span-8">
-        <div className="relative z-0 h-full">
-            <MapChart data={filteredData} />
-        </div>
-      </div>
       <div className="col-span-12 lg:col-span-4">
           <LocationFilters 
             data={fullData}
@@ -74,6 +69,11 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
             onNeighborhoodChange={onNeighborhoodChange}
             filters={filters}
           />
+      </div>
+      <div className="col-span-12 lg:col-span-8">
+        <div className="relative z-0 h-full">
+            <MapChart data={filteredData} />
+        </div>
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
