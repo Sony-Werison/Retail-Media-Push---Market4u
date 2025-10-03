@@ -34,25 +34,27 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       
-      <Card className="col-span-12 sm:col-span-4 lg:col-span-4">
-        <CardHeader>
-          <CardTitle>Impactos Gerais</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-4xl font-bold">{totalImpacts.toLocaleString('pt-BR')}</p>
-        </CardContent>
-      </Card>
-      
-      <Card className="col-span-12 sm:col-span-4 lg:col-span-4">
-        <CardHeader>
-          <CardTitle>Alcance Geral</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-4xl font-bold">{totalReach.toLocaleString('pt-BR')}</p>
-        </CardContent>
-      </Card>
+      <div className="col-span-12 lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+          <Card className="col-span-1">
+              <CardHeader>
+                  <CardTitle>Impactos Gerais</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-4xl font-bold">{totalImpacts.toLocaleString('pt-BR')}</p>
+              </CardContent>
+          </Card>
+          
+          <Card className="col-span-1">
+              <CardHeader>
+                  <CardTitle>Alcance Geral</CardTitle>
+              </CardHeader>
+              <CardContent>
+                  <p className="text-4xl font-bold">{totalReach.toLocaleString('pt-BR')}</p>
+              </CardContent>
+          </Card>
+      </div>
 
-      <Card className="col-span-12 sm:col-span-4 lg:col-span-4">
+      <Card className="col-span-12 lg:col-span-4">
         <CardHeader>
           <CardTitle>Frequência Média</CardTitle>
         </CardHeader>
