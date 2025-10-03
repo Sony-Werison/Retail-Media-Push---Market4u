@@ -4,8 +4,7 @@ import { AgeChart } from "./age-chart";
 import { GenderChart } from "./gender-chart";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
-import { PlatformChart } from "./platform-chart";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import React from "react";
 import { LocationChart } from "./location-chart";
 import { parseValue } from "@/lib/utils";
@@ -83,10 +82,6 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <TopLists data={data} title="Top Operadoras" keys={['#1 Operadora', '#2 Operadora', '#3 Operadora']} />
-      </div>
-
-      <div className="col-span-12 lg:col-span-12">
-        <PlatformChart data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6">

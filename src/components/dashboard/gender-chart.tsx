@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 
@@ -13,11 +13,11 @@ type GenderChartProps = {
 const chartConfig = {
   Masculino: {
     label: "Masculino",
-    color: "hsl(210 100% 50%)", // Blue
+    color: "hsl(var(--accent))",
   },
   Feminino: {
     label: "Feminino",
-    color: "hsl(330 100% 70%)", // Pink
+    color: "hsl(var(--primary))", 
   },
 };
 
@@ -54,16 +54,6 @@ export function GenderChart({ data }: GenderChartProps) {
                       cursor={{fill: 'hsl(var(--muted))'}}
                       content={<ChartTooltipContent indicator="dot" />}
                   />
-                   <Legend content={({ payload }) => (
-                      <ul className="flex justify-center gap-4 mt-4">
-                        {payload?.map((entry, index) => (
-                          <li key={`item-${index}`} className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                            <span className="text-sm text-muted-foreground">{entry.value}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )} />
                   <Pie
                     data={chartData}
                     dataKey="value"
@@ -72,15 +62,23 @@ export function GenderChart({ data }: GenderChartProps) {
                     cy="50%"
                     innerRadius={60}
                     outerRadius={100}
-                    paddingAngle={5}
+                    paddingAngle={2}
                     labelLine={false}
-                    label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                    label={({ cx, cy, midAngle, outerRadius, percent, payload }) => {
+                        const radius = outerRadius * 1.15;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                         const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                        const isDarkSlice = payload.fill === chartConfig.Masculino.color;
                         return (
-                          <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                            {`${(percent * 100).toFixed(0)}%`}
+                          <text 
+                            x={x} 
+                            y={y} 
+                            fill={isDarkSlice ? 'hsl(var(--accent-foreground))' : 'hsl(var(--foreground))'}
+                            textAnchor={x > cx ? 'start' : 'end'} 
+                            dominantBaseline="central"
+                            className="text-sm font-bold"
+                          >
+                            {`${(percent * 100).toFixed(1)}%`}
                           </text>
                         );
                     }}
