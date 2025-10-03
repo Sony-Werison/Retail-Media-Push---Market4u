@@ -18,7 +18,7 @@ export function DashboardHeader({ fileName, hasData }: DashboardHeaderProps) {
   const title = fileName.replace(/\.[^/.]+$/, "");
 
   const handleExportToPDF = () => {
-    const dashboardElement = document.querySelector<HTMLElement>('.grid.grid-cols-12');
+    const dashboardElement = document.body;
     if (dashboardElement) {
       toast({ title: 'Exportando para PDF...', description: 'Aguarde um momento.' });
       
@@ -43,7 +43,7 @@ export function DashboardHeader({ fileName, hasData }: DashboardHeaderProps) {
   };
   
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-card border-b border-t-4 border-primary shrink-0 sm:px-6">
+    <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 bg-card border-b border-t-4 border-primary shrink-0 sm:px-6">
       <div className="flex items-center gap-4">
         <LoganLogo className="h-6" />
         <div>
