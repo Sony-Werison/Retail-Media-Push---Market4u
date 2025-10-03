@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 import { FilterControls } from './filter-controls';
@@ -31,8 +31,8 @@ const chartConfig = {
 };
 
 export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
-  const { chartData, totalSum } = useMemo(() => {
-    if (!data) return { chartData: [], totalSum: 0 };
+  const { chartData } = useMemo(() => {
+    if (!data) return { chartData: [] };
     
     const totals = ageKeys.map(key => ({
       name: key.replace('Faixa Etária (', '').replace(')', '').replace(/_/g, '-'),
@@ -46,7 +46,7 @@ export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
         percentage: totalSum > 0 ? (item.total / totalSum) * 100 : 0
     }));
 
-    return { chartData, totalSum };
+    return { chartData };
   }, [data]);
 
   const handleBarClick = (payload: any) => {
@@ -87,7 +87,18 @@ export function AgeChart({ data, filter, onFilterChange }: AgeChartProps) {
                       cursor={{fill: 'hsl(var(--muted))'}}
                       content={<ChartTooltipContent indicator="dot" formatter={(value) => `${(value as number).toFixed(1)}%`} />}
                   />
-                  <Bar dataKey="percentage" name="Percentual" fill="var(--color-percentage)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="percentage" name="Percentual" radius={[4, 4, 0, 0]}>
+                    {chartData.map((entry) => (
+                      <Cell 
+                        key={`cell-${entry.name}`} 
+                        fill="var(--color-percentage)"
+                        style={{
+                          cursor: 'pointer',
+                          opacity: filter === null || filter === entry.name ? 1 : 0.4
+                        }}
+                      />
+                    ))}
+                  </Bar>
               </BarChart>
           </ResponsiveContainer>
         </ChartContainer>

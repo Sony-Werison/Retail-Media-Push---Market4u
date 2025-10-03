@@ -48,10 +48,14 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       return true;
     });
   }, [data, activeFilters]);
-
+  
   const totalImpacts = filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0);
   const totalReach = filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0);
   const avgFrequency = totalReach > 0 ? totalImpacts / totalReach : 0;
+  
+  // Para os gráficos, queremos usar o dataset inteiro para calcular as proporções,
+  // mas aplicar o filtro para o realce visual
+  const baseDataForCharts = data;
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
@@ -93,7 +97,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <GenderChart 
-          data={filteredData} 
+          data={baseDataForCharts} 
           filter={activeFilters.gender}
           onFilterChange={(value) => handleFilterChange('gender', value)}
         />
@@ -101,7 +105,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
         <AgeChart 
-          data={filteredData} 
+          data={baseDataForCharts} 
           filter={activeFilters.age}
           onFilterChange={(value) => handleFilterChange('age', value)}
         />
@@ -109,7 +113,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
         <SocioEconomicChart 
-          data={filteredData}
+          data={baseDataForCharts}
           filter={activeFilters.socio}
           onFilterChange={(value) => handleFilterChange('socio', value)}
         />
