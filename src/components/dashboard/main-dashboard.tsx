@@ -54,8 +54,6 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
   const totalReach = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [filteredData]);
   const avgFrequency = useMemo(() => (totalReach > 0 ? totalImpacts / totalReach : 0), [totalImpacts, totalReach]);
   
-  const baseDataForCharts = data;
-
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       
@@ -96,7 +94,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <GenderChart 
-          data={baseDataForCharts} 
+          data={filteredData} 
           filter={activeFilters.gender}
           onFilterChange={(value) => handleFilterChange('gender', value)}
         />
@@ -104,7 +102,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
         <AgeChart 
-          data={baseDataForCharts} 
+          data={filteredData} 
           filter={activeFilters.age}
           onFilterChange={(value) => handleFilterChange('age', value)}
         />
@@ -112,7 +110,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6 lg:col-span-6">
         <SocioEconomicChart 
-          data={baseDataForCharts}
+          data={filteredData}
           filter={activeFilters.socio}
           onFilterChange={(value) => handleFilterChange('socio', value)}
         />
