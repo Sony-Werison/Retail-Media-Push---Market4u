@@ -2,18 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { LoganLogo } from "./logan-logo";
-import { X, Download, Share2 } from "lucide-react";
+import { Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useToast } from "@/hooks/use-toast";
 
 type DashboardHeaderProps = {
   fileName: string;
-  onReset: () => void;
   hasData: boolean;
 };
 
-export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderProps) {
+export function DashboardHeader({ fileName, hasData }: DashboardHeaderProps) {
   const { toast } = useToast();
   
   const title = fileName.replace(/\.[^/.]+$/, "");
@@ -22,7 +21,19 @@ export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderP
     const dashboardElement = document.querySelector<HTMLElement>('.grid.grid-cols-12');
     if (dashboardElement) {
       toast({ title: 'Exportando para PDF...', description: 'Aguarde um momento.' });
-      html2canvas(dashboardElement, { scale: 2 }).then((canvas) => {
+      
+      // Use um seletor mais específico se o mapa estiver causando problemas
+      html2canvas(dashboardElement, { 
+        scale: 2,
+        useCORS: true, // Pode ajudar com imagens de tiles do mapa
+        // Abaixo, algumas opções que podem ajudar a renderizar melhor
+        // Tente descomentar se a qualidade ainda não for boa
+        // logging: true, 
+        // scrollX: -window.scrollX,
+        // scrollY: -window.scrollY,
+        // windowWidth: dashboardElement.scrollWidth,
+        // windowHeight: dashboardElement.scrollHeight
+      }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF({
           orientation: "landscape",
@@ -38,24 +49,7 @@ export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderP
       });
     }
   };
-
-  const handleShareLink = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      toast({
-        title: "Link Copiado!",
-        description: "O link de visualização foi copiado para a área de transferência.",
-      });
-    }).catch(err => {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Não foi possível copiar o link.",
-      });
-    });
-  };
-
-
+  
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 bg-card border-b border-t-4 border-primary shrink-0 sm:px-6">
       <div className="flex items-center gap-4">
@@ -74,12 +68,6 @@ export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderP
            </div>
           <Button variant="ghost" size="icon" onClick={handleExportToPDF} aria-label="Export to PDF">
             <Download className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleShareLink} aria-label="Share link">
-            <Share2 className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={onReset} aria-label="Clear data">
-            <X className="w-5 h-5" />
           </Button>
         </div>
       )}
