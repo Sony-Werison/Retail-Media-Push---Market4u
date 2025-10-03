@@ -61,18 +61,19 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
         </CardContent>
       </Card>
 
-      <div className="col-span-12 lg:col-span-8">
-        <MapChart data={filteredData} />
-      </div>
-      
-      <div className="col-span-12 lg:col-span-4">
-        <LocationFilters 
-          data={fullData}
-          onStateChange={onStateChange}
-          onCityChange={onCityChange}
-          onNeighborhoodChange={onNeighborhoodChange}
-          filters={filters}
-        />
+      <div className="col-span-12 flex flex-col lg:flex-row gap-4 md:gap-6">
+        <div className="w-full lg:w-8/12">
+            <MapChart data={filteredData} />
+        </div>
+        <div className="w-full lg:w-4/12">
+            <LocationFilters 
+              data={fullData}
+              onStateChange={onStateChange}
+              onCityChange={onCityChange}
+              onNeighborhoodChange={onNeighborhoodChange}
+              filters={filters}
+            />
+        </div>
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
