@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { ChartTooltipContent } from '@/components/ui/chart';
+import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 
 type AgeChartProps = {
   data: RowData[];
@@ -19,6 +19,13 @@ const ageKeys: (keyof RowData)[] = [
   'Faixa Etária (60_69)',
   'Faixa Etária (70+)',
 ];
+
+const chartConfig = {
+  total: {
+    label: "Total",
+    color: "hsl(var(--chart-3))",
+  },
+};
 
 export function AgeChart({ data }: AgeChartProps) {
   const chartData = useMemo(() => {
@@ -39,18 +46,20 @@ export function AgeChart({ data }: AgeChartProps) {
         <CardDescription>Audience breakdown by age groups.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis />
-                <Tooltip
-                    cursor={{fill: 'hsl(var(--muted))'}}
-                    content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Bar dataKey="total" name="Total" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
-            </BarChart>
-        </ResponsiveContainer>
+        <ChartContainer config={chartConfig}>
+          <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                  <YAxis />
+                  <Tooltip
+                      cursor={{fill: 'hsl(var(--muted))'}}
+                      content={<ChartTooltipContent indicator="dot" />}
+                  />
+                  <Bar dataKey="total" name="Total" fill="var(--color-total)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
