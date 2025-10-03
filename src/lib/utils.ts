@@ -22,23 +22,42 @@ export function parseValue(value: string | number | null | undefined): number {
     return 0;
 }
 
-export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN = 5): { topItems: { name: string; value: number }[], totalCount: number } => {
+
+// Cleans a string by removing any trailing content in parentheses.
+// e.g., "Apple (25,00%)" becomes "Apple"
+function cleanItemName(name: string): string {
+    if (typeof name !== 'string') return '';
+    return name.split('(')[0].trim();
+}
+
+export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN = 5): { topItems: { name: string; value: number; percentage: number }[], totalCount: number } => {
   const counts = new Map<string, number>();
   let totalCount = 0;
 
   data.forEach(row => {
     keys.forEach(key => {
-      const item = row[key] as string;
-      if (item && item.trim() !== '' && item.trim().toLowerCase() !== 'n/a' && item.trim() !== '-') {
-        const currentCount = (counts.get(item) || 0) + 1;
-        counts.set(item, currentCount);
+      const rawItem = row[key] as string;
+      if (rawItem && rawItem.trim() !== '' && rawItem.trim().toLowerCase() !== 'n/a' && rawItem.trim() !== '-') {
+        const itemName = cleanItemName(rawItem);
+        if (itemName) {
+            const currentCount = (counts.get(itemName) || 0) + 1;
+            counts.set(itemName, currentCount);
+        }
         totalCount++;
       }
     });
   });
   
+  if (totalCount === 0) {
+    totalCount = 1; // Avoid division by zero
+  }
+
   const sortedItems = Array.from(counts.entries())
-    .map(([name, value]) => ({ name, value }))
+    .map(([name, value]) => ({ 
+        name, 
+        value,
+        percentage: (value / totalCount) * 100
+    }))
     .sort((a, b) => b.value - a.value);
 
   return {

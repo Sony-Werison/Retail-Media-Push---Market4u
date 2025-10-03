@@ -11,11 +11,11 @@ type PlatformChartProps = {
 };
 
 const chartConfig = {
-  iOS: {
+  'iOS': {
     label: 'iOS',
     color: 'hsl(var(--chart-1))',
   },
-  Android: {
+  'Android': {
     label: 'Android',
     color: 'hsl(var(--chart-2))',
   },
@@ -35,8 +35,8 @@ export function PlatformChart({ data }: PlatformChartProps) {
     );
 
     return [
-      { name: 'iOS', value: totals.ios, fill: 'var(--color-iOS)' },
-      { name: 'Android', value: totals.android, fill: 'var(--color-Android)' },
+      { name: 'iOS', value: totals.ios, fill: chartConfig['iOS'].color },
+      { name: 'Android', value: totals.android, fill: chartConfig['Android'].color },
     ];
   }, [data]);
 
@@ -63,6 +63,7 @@ export function PlatformChart({ data }: PlatformChartProps) {
                         outerRadius={100}
                         labelLine={false}
                         label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                            if (percent === 0) return null;
                             const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                             const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                             const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
@@ -73,8 +74,8 @@ export function PlatformChart({ data }: PlatformChartProps) {
                             );
                         }}
                     >
-                        {chartData.map((entry) => (
-                            <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
                     </Pie>
                 </PieChart>
