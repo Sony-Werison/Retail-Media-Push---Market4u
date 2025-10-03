@@ -5,31 +5,17 @@ import { GenderChart } from "./gender-chart";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { PlatformChart } from "./platform-chart";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import dynamic from "next/dynamic";
-import { Skeleton } from "../ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import React from "react";
 
-const GeoMap = dynamic(() => import("./geo-map").then((mod) => mod.GeoMap), {
-  ssr: false,
-  loading: () => (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle>Visualização Geográfica</CardTitle>
-        <CardDescription>Carregando mapa...</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <Skeleton className="w-full h-full rounded-lg" />
-      </CardContent>
-    </Card>
-  ),
-});
 
 type MainDashboardProps = {
   data: RowData[];
   csvString: string;
+  GeoMapComponent: React.ElementType<{ data: RowData[] }>;
 };
 
-export function MainDashboard({ data, csvString }: MainDashboardProps) {
+export function MainDashboard({ data, csvString, GeoMapComponent }: MainDashboardProps) {
 
   const totalImpacts = data.reduce((sum, row) => sum + row['Impactos Gerais'], 0);
   const totalReach = data.reduce((sum, row) => sum + row['Alcance Geral Target'], 0);
@@ -67,7 +53,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       </Card>
 
       <div className="col-span-12 lg:col-span-8 row-span-2">
-        <GeoMap data={data} />
+        <GeoMapComponent data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
