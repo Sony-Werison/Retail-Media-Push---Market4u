@@ -50,7 +50,7 @@ export function GenderChart({ data }: GenderChartProps) {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                   <Tooltip
                       cursor={{fill: 'hsl(var(--muted))'}}

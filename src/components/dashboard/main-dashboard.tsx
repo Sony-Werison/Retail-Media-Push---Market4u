@@ -8,6 +8,7 @@ import React, { useMemo } from "react";
 import { parseValue } from "@/lib/utils";
 import { interestTranslations, appUsageTranslations } from "@/lib/translations";
 import dynamic from "next/dynamic";
+import { LocationFilters } from "./location-filters";
 
 const MapChart = dynamic(() => import('./map-chart').then(mod => mod.MapChart), {
   ssr: false,
@@ -16,13 +17,17 @@ const MapChart = dynamic(() => import('./map-chart').then(mod => mod.MapChart), 
 
 
 type MainDashboardProps = {
-  data: RowData[];
+  fullData: RowData[];
+  filteredData: RowData[];
+  onStateChange: (state: string) => void;
+  onCityChange: (city: string) => void;
+  filters: { state: string; city: string };
 };
 
-export function MainDashboard({ data }: MainDashboardProps) {
+export function MainDashboard({ fullData, filteredData, onStateChange, onCityChange, filters }: MainDashboardProps) {
   
-  const totalImpacts = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [data]);
-  const totalReach = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [data]);
+  const totalImpacts = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [filteredData]);
+  const totalReach = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [filteredData]);
   const avgFrequency = useMemo(() => (totalReach > 0 ? totalImpacts / totalReach : 0), [totalImpacts, totalReach]);
   
   return (
@@ -55,37 +60,46 @@ export function MainDashboard({ data }: MainDashboardProps) {
         </CardContent>
       </Card>
 
-      <div className="col-span-12 lg:col-span-8 row-span-2">
-        <MapChart data={data} />
+      <div className="col-span-12 lg:col-span-8">
+         <MapChart data={filteredData} />
+      </div>
+      
+      <div className="col-span-12 lg:col-span-4">
+        <LocationFilters 
+          data={fullData}
+          onStateChange={onStateChange}
+          onCityChange={onCityChange}
+          filters={filters}
+        />
       </div>
 
-      <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <GenderChart data={data} />
+      <div className="col-span-12 md:col-span-4">
+        <GenderChart data={filteredData} />
       </div>
       
-      <div className="col-span-12 md:col-span-6 lg:col-span-6">
-        <AgeChart data={data} />
+      <div className="col-span-12 md:col-span-4">
+        <AgeChart data={filteredData} />
       </div>
       
-      <div className="col-span-12 md:col-span-6 lg:col-span-6">
-        <SocioEconomicChart data={data} />
+      <div className="col-span-12 md:col-span-4">
+        <SocioEconomicChart data={filteredData} />
       </div>
 
        <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={data} title="Top Marcas" keys={['#1 Marca', '#2 Marca', '#3 Marca']} />
+        <TopLists data={filteredData} title="Top Marcas" keys={['#1 Marca', '#2 Marca', '#3 Marca']} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={data} title="Top Modelos" keys={['#1 Modelo', '#2 Modelo', '#3 Modelo']} />
+        <TopLists data={filteredData} title="Top Modelos" keys={['#1 Modelo', '#2 Modelo', '#3 Modelo']} />
       </div>
       
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <TopLists data={data} title="Top Operadoras" keys={['#1 Operadora', '#2 Operadora', '#3 Operadora']} />
+        <TopLists data={filteredData} title="Top Operadoras" keys={['#1 Operadora', '#2 Operadora', '#3 Operadora']} />
       </div>
 
       <div className="col-span-12 md:col-span-6">
         <TopLists 
-          data={data} 
+          data={filteredData} 
           title="Perfil de Interesses" 
           keys={['#1 Comportamento Offline', '#2 Comportamento Offline', '#3 Comportamento Offline']}
           translationMap={interestTranslations} 
@@ -94,7 +108,7 @@ export function MainDashboard({ data }: MainDashboardProps) {
       
       <div className="col-span-12 md:col-span-6">
         <TopLists 
-          data={data} 
+          data={filteredData} 
           title="Uso de Apps" 
           keys={['#1 Uso de Apps', '#2 Uso de Apps', '#3 Uso de Apps']}
           translationMap={appUsageTranslations}

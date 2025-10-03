@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { DataUpload } from "@/components/dashboard/data-upload";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -14,11 +14,13 @@ const MainDashboard = dynamic(
   }
 );
 
-
 export default function Home() {
   const [data, setData] = useState<RowData[] | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [stateFilter, setStateFilter] = useState<string>('all');
+  const [cityFilter, setCityFilter] = useState<string>('all');
+
 
   const handleDataUploaded = (
     parsedData: RowData[],
@@ -38,7 +40,23 @@ export default function Home() {
   const handleReset = () => {
     setData(null);
     setFileName('');
+    setStateFilter('all');
+    setCityFilter('all');
   };
+
+  const handleStateChange = (state: string) => {
+    setStateFilter(state);
+    setCityFilter('all'); // Reseta a cidade quando o estado muda
+  };
+
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    return data.filter(row => {
+      const stateMatch = stateFilter === 'all' || row.PDX_ESTADO === stateFilter;
+      const cityMatch = cityFilter === 'all' || row.PDX_CIDADE === cityFilter;
+      return stateMatch && cityMatch;
+    });
+  }, [data, stateFilter, cityFilter]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -54,7 +72,13 @@ export default function Home() {
             />
           </div>
         ) : (
-          <MainDashboard data={data} />
+          <MainDashboard
+            fullData={data}
+            filteredData={filteredData}
+            onStateChange={handleStateChange}
+            onCityChange={setCityFilter}
+            filters={{ state: stateFilter, city: cityFilter }}
+          />
         )}
       </main>
     </div>
