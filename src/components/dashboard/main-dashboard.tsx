@@ -90,7 +90,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       </div>
 
       <div className="col-span-12 md:col-span-6">
-        <TopLists data={data} title="Comportamento Offline" keys={['#1 Comportamento Offline', '#2 Comportamento Offline', '#3 Comportamento Offline']} />
+        <TopLists data={data} title="Perfil de Interesses" keys={['#1 Comportamento Offline', '#2 Comportamento Offline', '#3 Comportamento Offline']} />
       </div>
       
       <div className="col-span-12 md:col-span-6">

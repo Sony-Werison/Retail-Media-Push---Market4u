@@ -37,6 +37,9 @@ export interface RowData {
   '#1 Operadora': string;
   '#2 Operadora': string;
   '#3 Operadora': string;
+  '#1 Plataforma': string;
+  '#2 Plataforma': string;
+  '#3 Plataforma': string;
   '#1 Comportamento Offline': string;
   '#2 Comportamento Offline': string;
   '#3 Comportamento Offline': string;
