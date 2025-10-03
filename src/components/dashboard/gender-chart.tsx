@@ -17,7 +17,7 @@ const chartConfig = {
   },
   Feminino: {
     label: "Feminino",
-    color: "hsl(var(--primary))", 
+    color: "hsl(var(--chart-2))", 
   },
 };
 
