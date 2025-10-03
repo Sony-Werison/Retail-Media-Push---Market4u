@@ -14,7 +14,7 @@ export function LoganLogo({ className }: { className?: string }) {
         <circle cx="70" cy="50" r="20" className="fill-primary" />
         <path
           d="M60,50 A10,10 0 1,1 80,50 A10,10 0 1,1 60,50 Z"
-          className="fill-background"
+          className="fill-card"
         />
       </g>
     </svg>
