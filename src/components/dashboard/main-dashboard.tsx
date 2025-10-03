@@ -8,6 +8,7 @@ import { PlatformChart } from "./platform-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React from "react";
 import { LocationChart } from "./location-chart";
+import { parseValue } from "@/lib/utils";
 
 
 type MainDashboardProps = {
@@ -17,9 +18,9 @@ type MainDashboardProps = {
 
 export function MainDashboard({ data, csvString }: MainDashboardProps) {
 
-  const totalImpacts = data.reduce((sum, row) => sum + row['Impactos Gerais'], 0);
-  const totalReach = data.reduce((sum, row) => sum + row['Alcance Geral Target'], 0);
-  const avgFrequency = data.length > 0 ? data.reduce((sum, row) => sum + row['Frequência Média'], 0) / data.length : 0;
+  const totalImpacts = data.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0);
+  const totalReach = data.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0);
+  const avgFrequency = totalReach > 0 ? totalImpacts / totalReach : 0;
 
 
   return (

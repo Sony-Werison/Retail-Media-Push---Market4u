@@ -13,7 +13,7 @@ type TopListsProps = {
 };
 
 export function TopLists({ data, title, keys }: TopListsProps) {
-  const { topItems, totalCount } = useMemo(() => aggregateAndSort(data, keys, 5), [data, keys]);
+  const { topItems } = useMemo(() => aggregateAndSort(data, keys, 5), [data, keys]);
 
   return (
     <Card className="h-full">
@@ -29,7 +29,7 @@ export function TopLists({ data, title, keys }: TopListsProps) {
                     <Badge variant="outline" className="w-6 h-6 flex items-center justify-center p-0">{index + 1}</Badge>
                     <span className="font-medium capitalize">{item.name.toLowerCase().replace(/_/g, ' ')}</span>
                 </div>
-                <span className="font-mono text-sm text-muted-foreground">{((item.value / totalCount) * 100).toFixed(1)}%</span>
+                <span className="font-mono text-sm text-muted-foreground">{item.value}</span>
               </li>
             ))}
           </ul>

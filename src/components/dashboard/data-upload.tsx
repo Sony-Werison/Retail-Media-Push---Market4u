@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UploadCloud, Loader2 } from "lucide-react";
-import { cn, parseCountValue } from "@/lib/utils";
+import { cn, parseValue } from "@/lib/utils";
 import { RowData } from "@/lib/types";
 
 type DataUploadProps = {
@@ -35,30 +35,23 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
             if(!(key in row)) throw new Error(`Coluna obrigatória ausente: ${key}`);
         }
 
-        return {
-          ...row,
-          PDX_LAT: parseFloat(String(row.PDX_LAT).replace(',', '.')),
-          PDX_LNG: parseFloat(String(row.PDX_LNG).replace(',', '.')),
-          'Alcance Geral Target': parseCountValue(row['Alcance Geral Target']),
-          'Frequência Média': parseFloat(String(row['Frequência Média']).replace(',', '.')) || 0,
-          'Impactos Gerais': parseCountValue(row['Impactos Gerais']),
-          'Gênero (Masculino)': parseCountValue(row['Gênero (Masculino)']),
-          'Gênero (Feminino)': parseCountValue(row['Gênero (Feminino)']),
-          'Faixa Etária (18_24)': parseCountValue(row['Faixa Etária (18_24)']),
-          'Faixa Etária (25_29)': parseCountValue(row['Faixa Etária (25_29)']),
-          'Faixa Etária (30_39)': parseCountValue(row['Faixa Etária (30_39)']),
-          'Faixa Etária (40_49)': parseCountValue(row['Faixa Etária (40_49)']),
-          'Faixa Etária (50_59)': parseCountValue(row['Faixa Etária (50_59)']),
-          'Faixa Etária (60_69)': parseCountValue(row['Faixa Etária (60_69)']),
-          'Faixa Etária (70+)': parseCountValue(row['Faixa Etária (70+)']),
-          'Nível Socioeconômico (A)': parseCountValue(row['Nível Socioeconômico (A)']),
-          'Nível Socioeconômico (B)': parseCountValue(row['Nível Socioeconômico (B)']),
-          'Nível Socioeconômico (C)': parseCountValue(row['Nível Socioeconômico (C)']),
-          'Nível Socioeconômico (D)': parseCountValue(row['Nível Socioeconômico (D)']),
-          'Nível Socioeconômico (E)': parseCountValue(row['Nível Socioeconômico (E)']),
-          'Plataforma (ios)': parseCountValue(row['Plataforma (ios)']),
-          'Plataforma (Android)': parseCountValue(row['Plataforma (Android)']),
-        };
+        const newRow: any = { ...row };
+        for (const key in newRow) {
+            if(Object.prototype.hasOwnProperty.call(newRow, key)) {
+                const value = newRow[key];
+                if (typeof value === 'string' && (value.includes(',') || (!isNaN(Number(value)) && value.trim() !== ''))) {
+                    if (key === 'PDX_LAT' || key === 'PDX_LNG') {
+                        newRow[key] = parseFloat(value.replace(',', '.'));
+                    } else if (key !== 'ID' && key !== 'NOME' && key !== 'PDX_ENDERECO' && key !== 'PDX_NUMERO' && key !== 'PDX_BAIRRO' && key !== 'PDX_CIDADE' && key !== 'PDX_ESTADO' && key !== 'PDX_CEP' && !key.startsWith('#')) {
+                         newRow[key] = parseValue(value);
+                    }
+                } else if(typeof value === 'number') {
+                  newRow[key] = value;
+                }
+            }
+        }
+        
+        return newRow as RowData;
       });
       onDataUploaded(parsedData, csvString, fileName);
     } catch (error: any) {
@@ -108,14 +101,14 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
               },
             });
         };
-        reader.readAsText(file);
+        reader.readAsText(file, 'ISO-8859-1');
     } else { // Handle XLSX
         reader.onload = (e) => {
             const arrayBuffer = e.target?.result;
             const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(worksheet);
+            const json = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null });
             const csvString = XLSX.utils.sheet_to_csv(worksheet);
             handleData(json, csvString, file.name);
         };
