@@ -41,15 +41,15 @@ export function GenderChart({ data }: GenderChartProps) {
   }, [data]);
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Distribuição por Gênero</CardTitle>
         <CardDescription>
           Análise do público por gênero.
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square h-full">
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                   <Tooltip
@@ -63,11 +63,11 @@ export function GenderChart({ data }: GenderChartProps) {
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={80}
+                    outerRadius={90}
                     paddingAngle={2}
                     labelLine={false}
-                    label={({ cx, cy, midAngle, outerRadius, percent, payload }) => {
-                        const radius = outerRadius * 1.35;
+                    label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
+                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                         const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
                         
@@ -75,12 +75,12 @@ export function GenderChart({ data }: GenderChartProps) {
                           <text 
                             x={x} 
                             y={y} 
-                            fill="hsl(var(--foreground))"
-                            textAnchor={x > cx ? 'start' : 'end'} 
+                            fill="hsl(var(--card))"
+                            textAnchor="middle"
                             dominantBaseline="central"
-                            className="text-sm"
+                            className="text-sm font-bold"
                           >
-                            {`${(percent * 100).toFixed(1)}%`}
+                            {`${(percent * 100).toFixed(0)}%`}
                           </text>
                         );
                     }}

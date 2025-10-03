@@ -83,7 +83,7 @@ export function MapChart({ data }: MapChartProps) {
           zoom={4} 
           scrollWheelZoom={true}
           wheelDebounceTime={100}
-          wheelPxPerZoomLevel={120}
+          wheelPxPerZoomLevel={180}
           style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem" }}
           bounds={bounds}
           boundsOptions={{padding: [50,50]}}
