@@ -34,51 +34,46 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       
-      <div className="col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
-        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-            <Card className="col-span-1">
-                <CardHeader>
-                    <CardTitle>Impactos Gerais</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-4xl font-bold">{totalImpacts.toLocaleString('pt-BR')}</p>
-                </CardContent>
-            </Card>
-            
-            <Card className="col-span-1">
-                <CardHeader>
-                    <CardTitle>Alcance Geral</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-4xl font-bold">{totalReach.toLocaleString('pt-BR')}</p>
-                </CardContent>
-            </Card>
-        </div>
-
-        <Card className="lg:col-span-4">
+      <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
           <CardHeader>
-            <CardTitle>Frequência Média</CardTitle>
+              <CardTitle>Impactos Gerais</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{avgFrequency.toFixed(2)}</p>
+              <p className="text-4xl font-bold">{totalImpacts.toLocaleString('pt-BR')}</p>
           </CardContent>
-        </Card>
-      </div>
+      </Card>
+      
+      <Card className="col-span-12 sm:col-span-6 lg:col-span-4">
+          <CardHeader>
+              <CardTitle>Alcance Geral</CardTitle>
+          </CardHeader>
+          <CardContent>
+              <p className="text-4xl font-bold">{totalReach.toLocaleString('pt-BR')}</p>
+          </CardContent>
+      </Card>
 
+      <Card className="col-span-12 lg:col-span-4">
+        <CardHeader>
+          <CardTitle>Frequência Média</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-4xl font-bold">{avgFrequency.toFixed(2)}</p>
+        </CardContent>
+      </Card>
 
-      <div className="col-span-12 flex flex-col lg:flex-row gap-4 md:gap-6">
-        <div className="w-full lg:w-8/12">
+      <div className="col-span-12 lg:col-span-8">
+        <div className="relative z-0 h-full">
             <MapChart data={filteredData} />
         </div>
-        <div className="w-full lg:w-4/12">
-            <LocationFilters 
-              data={fullData}
-              onStateChange={onStateChange}
-              onCityChange={onCityChange}
-              onNeighborhoodChange={onNeighborhoodChange}
-              filters={filters}
-            />
-        </div>
+      </div>
+      <div className="col-span-12 lg:col-span-4">
+          <LocationFilters 
+            data={fullData}
+            onStateChange={onStateChange}
+            onCityChange={onCityChange}
+            onNeighborhoodChange={onNeighborhoodChange}
+            filters={filters}
+          />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
