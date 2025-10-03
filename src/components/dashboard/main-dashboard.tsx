@@ -5,7 +5,7 @@ import { GenderChart } from "./gender-chart";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { PlatformChart } from "./platform-chart";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import dynamic from "next/dynamic";
 import { Skeleton } from "../ui/skeleton";
 
