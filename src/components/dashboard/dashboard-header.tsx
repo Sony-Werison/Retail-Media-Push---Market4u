@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LoganLogo } from "./logan-logo";
-import { File, X, Download, Share2 } from "lucide-react";
+import { X, Download, Share2 } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +15,8 @@ type DashboardHeaderProps = {
 
 export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderProps) {
   const { toast } = useToast();
+  
+  const title = fileName.replace(/\.[^/.]+$/, "");
 
   const handleExportToPDF = () => {
     const dashboardElement = document.querySelector<HTMLElement>('.grid.grid-cols-12');
@@ -67,9 +69,8 @@ export function DashboardHeader({ fileName, onReset, hasData }: DashboardHeaderP
       </div>
       {hasData && (
         <div className="flex items-center gap-2">
-           <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-md bg-background border">
-            <File className="w-4 h-4"/>
-            <span className="hidden sm:inline">{fileName}</span>
+           <div className="hidden items-center gap-2 text-sm font-medium p-2 rounded-md sm:flex">
+            <span>{title}</span>
            </div>
           <Button variant="ghost" size="icon" onClick={handleExportToPDF} aria-label="Export to PDF">
             <Download className="w-5 h-5" />
