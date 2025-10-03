@@ -3,15 +3,15 @@
 import { useMemo } from 'react';
 import type { RowData } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { MultiSelect } from '@/components/ui/multi-select';
 
 type LocationFiltersProps = {
   data: RowData[];
-  onStateChange: (state: string) => void;
-  onCityChange: (city: string) => void;
-  onNeighborhoodChange: (neighborhood: string) => void;
-  filters: { state: string; city: string; neighborhood: string };
+  onStateChange: (states: string[]) => void;
+  onCityChange: (cities: string[]) => void;
+  onNeighborhoodChange: (neighborhoods: string[]) => void;
+  filters: { states: string[]; cities: string[]; neighborhoods: string[] };
 };
 
 export function LocationFilters({ data, onStateChange, onCityChange, onNeighborhoodChange, filters }: LocationFiltersProps) {
@@ -19,27 +19,41 @@ export function LocationFilters({ data, onStateChange, onCityChange, onNeighborh
     const states = [...new Set(data.map(row => row.PDX_ESTADO).filter(Boolean))].sort();
     
     let cities: string[] = [];
-    if (filters.state && filters.state !== 'all') {
+    if (filters.states.length > 0) {
       cities = [...new Set(
         data
-          .filter(row => row.PDX_ESTADO === filters.state)
+          .filter(row => filters.states.includes(row.PDX_ESTADO))
           .map(row => row.PDX_CIDADE)
           .filter(Boolean)
       )].sort();
+    } else {
+      // If no state is selected, show all cities from all states
+      cities = [...new Set(data.map(row => row.PDX_CIDADE).filter(Boolean))].sort();
     }
 
     let neighborhoods: string[] = [];
-    if (filters.city && filters.city !== 'all') {
+    if (filters.cities.length > 0) {
       neighborhoods = [...new Set(
         data
-          .filter(row => row.PDX_CIDADE === filters.city)
+          .filter(row => filters.cities.includes(row.PDX_CIDADE))
           .map(row => row.PDX_BAIRRO)
           .filter(Boolean)
       )].sort();
+    } else if (filters.states.length > 0) {
+        // if no city selected, but state is, show neighborhoods from selected states
+        neighborhoods = [...new Set(
+            data
+              .filter(row => filters.states.includes(row.PDX_ESTADO))
+              .map(row => row.PDX_BAIRRO)
+              .filter(Boolean)
+          )].sort();
+    } else {
+      // If no city is selected, show all neighborhoods
+      neighborhoods = [...new Set(data.map(row => row.PDX_BAIRRO).filter(Boolean))].sort();
     }
     
     return { states, cities, neighborhoods };
-  }, [data, filters.state, filters.city]);
+  }, [data, filters.states, filters.cities]);
 
   return (
     <Card className="h-full">
@@ -52,53 +66,40 @@ export function LocationFilters({ data, onStateChange, onCityChange, onNeighborh
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="state-select">Estado</Label>
-          <Select onValueChange={onStateChange} value={filters.state}>
-            <SelectTrigger id="state-select">
-              <SelectValue placeholder="Todos os estados" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os estados</SelectItem>
-              {states.map(state => (
-                <SelectItem key={state} value={state}>
-                  {state}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <MultiSelect
+            id="state-select"
+            options={states.map(s => ({ value: s, label: s }))}
+            selected={filters.states}
+            onChange={onStateChange}
+            placeholder="Todos os estados"
+            className="w-full"
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="city-select">Cidade</Label>
-          <Select onValueChange={onCityChange} value={filters.city} disabled={filters.state === 'all'}>
-            <SelectTrigger id="city-select">
-              <SelectValue placeholder="Todas as cidades" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as cidades</SelectItem>
-              {cities.map(city => (
-                <SelectItem key={city} value={city}>
-                  {city}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <MultiSelect
+            id="city-select"
+            options={cities.map(c => ({ value: c, label: c }))}
+            selected={filters.cities}
+            onChange={onCityChange}
+            placeholder="Todas as cidades"
+            className="w-full"
+            disabled={cities.length === 0}
+          />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="neighborhood-select">Bairro</Label>
-          <Select onValueChange={onNeighborhoodChange} value={filters.neighborhood} disabled={filters.city === 'all'}>
-            <SelectTrigger id="neighborhood-select">
-              <SelectValue placeholder="Todos os bairros" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os bairros</SelectItem>
-              {neighborhoods.map(neighborhood => (
-                <SelectItem key={neighborhood} value={neighborhood}>
-                  {neighborhood}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <MultiSelect
+            id="neighborhood-select"
+            options={neighborhoods.map(n => ({ value: n, label: n }))}
+            selected={filters.neighborhoods}
+            onChange={onNeighborhoodChange}
+            placeholder="Todos os bairros"
+            className="w-full"
+            disabled={neighborhoods.length === 0}
+          />
         </div>
       </CardContent>
     </Card>

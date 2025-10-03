@@ -19,10 +19,10 @@ const MapChart = dynamic(() => import('./map-chart').then(mod => mod.MapChart), 
 type MainDashboardProps = {
   fullData: RowData[];
   filteredData: RowData[];
-  onStateChange: (state: string) => void;
-  onCityChange: (city: string) => void;
-  onNeighborhoodChange: (neighborhood: string) => void;
-  filters: { state: string; city: string; neighborhood: string };
+  onStateChange: (states: string[]) => void;
+  onCityChange: (cities: string[]) => void;
+  onNeighborhoodChange: (neighborhoods: string[]) => void;
+  filters: { states: string[]; cities: string[]; neighborhoods: string[] };
 };
 
 export function MainDashboard({ fullData, filteredData, onStateChange, onCityChange, onNeighborhoodChange, filters }: MainDashboardProps) {

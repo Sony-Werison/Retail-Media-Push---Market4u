@@ -20,9 +20,9 @@ export default function Home() {
   const [data, setData] = useState<RowData[] | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
-  const [stateFilter, setStateFilter] = useState<string>('all');
-  const [cityFilter, setCityFilter] = useState<string>('all');
-  const [neighborhoodFilter, setNeighborhoodFilter] = useState<string>('all');
+  const [stateFilters, setStateFilters] = useState<string[]>([]);
+  const [cityFilters, setCityFilters] = useState<string[]>([]);
+  const [neighborhoodFilters, setNeighborhoodFilters] = useState<string[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,9 +106,9 @@ export default function Home() {
   const handleReset = () => {
     setData(null);
     setFileName('');
-    setStateFilter('all');
-    setCityFilter('all');
-    setNeighborhoodFilter('all');
+    setStateFilters([]);
+    setCityFilters([]);
+    setNeighborhoodFilters([]);
     
     // Since we want to reload the initial file on reset, we can call useEffect's logic again.
     const loadInitialFile = async () => {
@@ -137,26 +137,26 @@ export default function Home() {
     loadInitialFile();
   };
 
-  const handleStateChange = (state: string) => {
-    setStateFilter(state);
-    setCityFilter('all');
-    setNeighborhoodFilter('all');
+  const handleStateChange = (states: string[]) => {
+    setStateFilters(states);
+    setCityFilters([]);
+    setNeighborhoodFilters([]);
   };
 
-  const handleCityChange = (city: string) => {
-    setCityFilter(city);
-    setNeighborhoodFilter('all');
+  const handleCityChange = (cities: string[]) => {
+    setCityFilters(cities);
+    setNeighborhoodFilters([]);
   };
 
   const filteredData = useMemo(() => {
     if (!data) return [];
     return data.filter(row => {
-      const stateMatch = stateFilter === 'all' || row.PDX_ESTADO === stateFilter;
-      const cityMatch = cityFilter === 'all' || row.PDX_CIDADE === cityFilter;
-      const neighborhoodMatch = neighborhoodFilter === 'all' || row.PDX_BAIRRO === neighborhoodFilter;
+      const stateMatch = stateFilters.length === 0 || stateFilters.includes(row.PDX_ESTADO);
+      const cityMatch = cityFilters.length === 0 || cityFilters.includes(row.PDX_CIDADE);
+      const neighborhoodMatch = neighborhoodFilters.length === 0 || neighborhoodFilters.includes(row.PDX_BAIRRO);
       return stateMatch && cityMatch && neighborhoodMatch;
     });
-  }, [data, stateFilter, cityFilter, neighborhoodFilter]);
+  }, [data, stateFilters, cityFilters, neighborhoodFilters]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -172,8 +172,8 @@ export default function Home() {
             filteredData={filteredData}
             onStateChange={handleStateChange}
             onCityChange={handleCityChange}
-            onNeighborhoodChange={setNeighborhoodFilter}
-            filters={{ state: stateFilter, city: cityFilter, neighborhood: neighborhoodFilter }}
+            onNeighborhoodChange={setNeighborhoodFilters}
+            filters={{ states: stateFilters, cities: cityFilters, neighborhoods: neighborhoodFilters }}
           />
         )}
       </main>
