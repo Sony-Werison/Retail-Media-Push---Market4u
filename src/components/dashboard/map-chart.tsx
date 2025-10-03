@@ -81,10 +81,8 @@ export function MapChart({ data }: MapChartProps) {
         <MapContainer 
           center={[mapCenter.lat, mapCenter.lng]} 
           zoom={4} 
-          scrollWheelZoom={true}
-          wheelDebounceTime={100}
-          wheelPxPerZoomLevel={180}
-          style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem" }}
+          scrollWheelZoom={false}
+          style={{ height: '425px', width: '100%', borderRadius: "0 0 0.5rem 0.5rem" }}
           bounds={bounds}
           boundsOptions={{padding: [50,50]}}
         >
