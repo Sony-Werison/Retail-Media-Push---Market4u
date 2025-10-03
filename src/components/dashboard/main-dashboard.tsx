@@ -24,37 +24,36 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
   });
 
   const handleFilterChange = (type: FilterType, value: string | null) => {
-    setActiveFilters(prev => ({...prev, [type]: value }));
+    setActiveFilters(prev => ({ ...prev, [type]: value }));
   };
 
   const filteredData = useMemo(() => {
-    if (!activeFilters.gender && !activeFilters.age && !activeFilters.socio) {
+    const { gender, age, socio } = activeFilters;
+    if (!gender && !age && !socio) {
       return data;
     }
     
     return data.filter(row => {
-      if (activeFilters.gender) {
-        const genderKey = `Gênero (${activeFilters.gender})` as keyof RowData;
+      if (gender) {
+        const genderKey = `Gênero (${gender})` as keyof RowData;
         if (!row[genderKey] || parseValue(row[genderKey]) === 0) return false;
       }
-      if (activeFilters.age) {
-        const ageKey = `Faixa Etária (${activeFilters.age.replace('-', '_')})` as keyof RowData;
+      if (age) {
+        const ageKey = `Faixa Etária (${age.replace('-', '_')})` as keyof RowData;
          if (!row[ageKey] || parseValue(row[ageKey]) === 0) return false;
       }
-      if (activeFilters.socio) {
-        const socioKey = `Nível Socioeconômico (${activeFilters.socio})` as keyof RowData;
+      if (socio) {
+        const socioKey = `Nível Socioeconômico (${socio})` as keyof RowData;
         if (!row[socioKey] || parseValue(row[socioKey]) === 0) return false;
       }
       return true;
     });
   }, [data, activeFilters]);
   
-  const totalImpacts = filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0);
-  const totalReach = filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0);
-  const avgFrequency = totalReach > 0 ? totalImpacts / totalReach : 0;
+  const totalImpacts = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [filteredData]);
+  const totalReach = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [filteredData]);
+  const avgFrequency = useMemo(() => (totalReach > 0 ? totalImpacts / totalReach : 0), [totalImpacts, totalReach]);
   
-  // Para os gráficos, queremos usar o dataset inteiro para calcular as proporções,
-  // mas aplicar o filtro para o realce visual
   const baseDataForCharts = data;
 
   return (
