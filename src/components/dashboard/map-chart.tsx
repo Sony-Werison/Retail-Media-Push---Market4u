@@ -22,7 +22,7 @@ const MIN_RADIUS = 2;
 const MAX_RADIUS = 15;
 
 export function MapChart({ data }: MapChartProps) {
-  const { points, bounds, center } = useMemo(() => {
+  const { points, bounds } = useMemo(() => {
     const validPoints = data
       .filter(row => typeof row.PDX_LAT === 'number' && typeof row.PDX_LNG === 'number' && !isNaN(row.PDX_LAT) && !isNaN(row.PDX_LNG))
       .map(row => ({
@@ -34,10 +34,10 @@ export function MapChart({ data }: MapChartProps) {
       }));
 
     if (validPoints.length === 0) {
+      const defaultBounds = L.latLngBounds(L.latLng(-23.5505, -46.6333), L.latLng(-23.5505, -46.6333));
       return {
         points: [],
-        bounds: L.latLngBounds(L.latLng(-23.5505, -46.6333), L.latLng(-23.5505, -46.6333)),
-        center: [-23.5505, -46.6333] as [number, number]
+        bounds: defaultBounds,
       };
     }
     
@@ -63,7 +63,6 @@ export function MapChart({ data }: MapChartProps) {
     return { 
       points: pointsWithRadius, 
       bounds,
-      center: bounds.getCenter()
     };
   }, [data]);
 
