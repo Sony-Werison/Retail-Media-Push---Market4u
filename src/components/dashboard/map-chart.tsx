@@ -22,7 +22,7 @@ const MIN_RADIUS = 2;
 const MAX_RADIUS = 15;
 
 export function MapChart({ data }: MapChartProps) {
-  const { points, bounds } = useMemo(() => {
+  const { points, bounds, center } = useMemo(() => {
     const validPoints = data
       .filter(row => typeof row.PDX_LAT === 'number' && typeof row.PDX_LNG === 'number' && !isNaN(row.PDX_LAT) && !isNaN(row.PDX_LNG))
       .map(row => ({
@@ -36,7 +36,8 @@ export function MapChart({ data }: MapChartProps) {
     if (validPoints.length === 0) {
       return {
         points: [],
-        bounds: L.latLngBounds(L.latLng(-23.5505, -46.6333), L.latLng(-23.5505, -46.6333)) // Default to SP if no points
+        bounds: L.latLngBounds(L.latLng(-23.5505, -46.6333), L.latLng(-23.5505, -46.6333)),
+        center: [-23.5505, -46.6333] as [number, number]
       };
     }
     
@@ -61,7 +62,8 @@ export function MapChart({ data }: MapChartProps) {
 
     return { 
       points: pointsWithRadius, 
-      bounds
+      bounds,
+      center: bounds.getCenter()
     };
   }, [data]);
 
@@ -78,7 +80,7 @@ export function MapChart({ data }: MapChartProps) {
           wheelPxPerZoomLevel={120}
           style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
           bounds={bounds.isValid() ? bounds : undefined}
-          boundsOptions={{padding: [50,50]}}
+          boundsOptions={{padding: [20,20]}}
           className="h-full w-full leaflet-map-pane-recessed"
         >
           <TileLayer
