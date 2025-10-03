@@ -76,28 +76,33 @@ export function GenderChart({ data }: GenderChartProps) {
                     innerRadius={60}
                     outerRadius={90}
                     paddingAngle={2}
-                    labelLine={false}
-                    isAnimationActive={true}
-                    animationBegin={0}
-                    animationDuration={800}
-                    animationEasing="ease-out"
-                    label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
-                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                        const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                        const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                        
-                        return (
-                          <text 
-                            x={x} 
-                            y={y} 
-                            fill="hsl(var(--card-foreground))"
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            className="text-sm font-bold"
-                          >
-                            {`${(percent * 100).toFixed(0)}%`}
-                          </text>
-                        );
+                    labelLine={true}
+                    label={({
+                      cx,
+                      cy,
+                      midAngle,
+                      innerRadius,
+                      outerRadius,
+                      percent,
+                      index,
+                    }) => {
+                      const RADIAN = Math.PI / 180;
+                      const radius = 25 + innerRadius + (outerRadius - innerRadius);
+                      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                      return (
+                        <text
+                          x={x}
+                          y={y}
+                          fill="hsl(var(--foreground))"
+                          textAnchor={x > cx ? "start" : "end"}
+                          dominantBaseline="central"
+                          className="text-xs font-medium"
+                        >
+                          {chartData[index].name} ({(percent * 100).toFixed(0)}%)
+                        </text>
+                      );
                     }}
                   >
                     {chartData.map((entry) => (

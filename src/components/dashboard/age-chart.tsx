@@ -23,7 +23,7 @@ const ageKeys: (keyof RowData)[] = [
 const chartConfig = {
   percentage: {
     label: "Percentual",
-    color: "hsl(var(--chart-3))",
+    color: "hsl(var(--primary))",
   },
 };
 

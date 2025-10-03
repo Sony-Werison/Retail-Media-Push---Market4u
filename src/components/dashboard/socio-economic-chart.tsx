@@ -21,7 +21,7 @@ const seKeys: (keyof RowData)[] = [
 const chartConfig = {
   percentage: {
     label: "Percentual",
-    color: "hsl(var(--chart-4))",
+    color: "hsl(var(--chart-3))",
   },
 };
 

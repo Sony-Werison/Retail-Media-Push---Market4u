@@ -6,7 +6,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.leaflet-map-pane-recessed .leaflet-map-pane {
+.leaflet-map-pane-recessed .leaflet-map-pane,
+.leaflet-map-pane-recessed .leaflet-control {
   z-index: 10 !important;
 }
 
