@@ -1,10 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { DataUpload } from "@/components/dashboard/data-upload";
-import { MainDashboard } from "@/components/dashboard/main-dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import type { RowData } from "@/lib/types";
+
+const MainDashboard = dynamic(
+  () => import('@/components/dashboard/main-dashboard').then(mod => mod.MainDashboard),
+  {
+    loading: () => <div className="flex-1 p-4 sm:p-6 md:p-8"><p>Carregando dashboard...</p></div>,
+    ssr: false
+  }
+);
+
 
 export default function Home() {
   const [data, setData] = useState<RowData[] | null>(null);
