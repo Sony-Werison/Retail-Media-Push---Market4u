@@ -22,7 +22,7 @@ const MIN_RADIUS = 2;
 const MAX_RADIUS = 15;
 
 export function MapChart({ data }: MapChartProps) {
-  const { points, mapCenter, bounds } = useMemo(() => {
+  const { points, bounds } = useMemo(() => {
     const validPoints = data
       .filter(row => typeof row.PDX_LAT === 'number' && typeof row.PDX_LNG === 'number' && !isNaN(row.PDX_LAT) && !isNaN(row.PDX_LNG))
       .map(row => ({
@@ -36,8 +36,7 @@ export function MapChart({ data }: MapChartProps) {
     if (validPoints.length === 0) {
       return {
         points: [],
-        mapCenter: { lat: -14.235, lng: -51.9253 }, // Brazil center
-        bounds: undefined
+        bounds: L.latLngBounds(L.latLng(-23.5505, -46.6333), L.latLng(-23.5505, -46.6333)) // Default to SP if no points
       };
     }
     
@@ -48,7 +47,6 @@ export function MapChart({ data }: MapChartProps) {
     const pointsWithRadius = validPoints.map(p => {
       let radius = MIN_RADIUS;
       if (maxImpact > minImpact) {
-        // Normalize impacts to a 0-1 scale and then map to radius range
         const scale = (p.impacts - minImpact) / (maxImpact - minImpact);
         radius = MIN_RADIUS + (scale * (MAX_RADIUS - MIN_RADIUS));
       }
@@ -57,16 +55,12 @@ export function MapChart({ data }: MapChartProps) {
 
     const lats = validPoints.map(p => p.lat);
     const lngs = validPoints.map(p => p.lng);
-    const avgLat = lats.reduce((a, b) => a + b, 0) / validPoints.length;
-    const avgLng = lngs.reduce((a, b) => a + b, 0) / validPoints.length;
-    
     const corner1 = L.latLng(Math.min(...lats), Math.min(...lngs));
     const corner2 = L.latLng(Math.max(...lats), Math.max(...lngs));
     const bounds = L.latLngBounds(corner1, corner2);
 
     return { 
       points: pointsWithRadius, 
-      mapCenter: { lat: avgLat, lng: avgLng },
       bounds
     };
   }, [data]);
@@ -79,14 +73,13 @@ export function MapChart({ data }: MapChartProps) {
       </CardHeader>
       <CardContent className="flex-1 pb-0 -m-6 mt-0">
         <MapContainer 
-          center={[mapCenter.lat, mapCenter.lng]} 
-          zoom={4} 
           scrollWheelZoom={true}
           wheelDebounceTime={150}
           wheelPxPerZoomLevel={120}
-          style={{ height: '425px', width: '100%', borderRadius: "0 0 0.5rem 0.5rem" }}
-          bounds={bounds}
+          style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
+          bounds={bounds.isValid() ? bounds : undefined}
           boundsOptions={{padding: [50,50]}}
+          className="h-full w-full"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

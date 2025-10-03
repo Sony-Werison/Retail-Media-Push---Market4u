@@ -62,7 +62,7 @@ export function GenderChart({ data }: GenderChartProps) {
                         indicator="dot" 
                         nameKey="name"
                         formatter={(value, name) => {
-                          const percentage = totalValue > 0 ? (value / totalValue) * 100 : 0;
+                          const percentage = totalValue > 0 ? ((value as number) / totalValue) * 100 : 0;
                           return `${percentage.toFixed(1)}%`;
                         }}
                       />}
