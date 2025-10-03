@@ -5,9 +5,15 @@ import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React, { useMemo } from "react";
-import { LocationChart } from "./location-chart";
 import { parseValue } from "@/lib/utils";
 import { interestTranslations, appUsageTranslations } from "@/lib/translations";
+import dynamic from "next/dynamic";
+
+const MapChart = dynamic(() => import('./map-chart').then(mod => mod.MapChart), {
+  ssr: false,
+  loading: () => <div className="h-[425px] w-full bg-muted rounded-lg flex items-center justify-center"><p>Carregando mapa...</p></div>
+});
+
 
 type MainDashboardProps = {
   data: RowData[];
@@ -50,7 +56,7 @@ export function MainDashboard({ data }: MainDashboardProps) {
       </Card>
 
       <div className="col-span-12 lg:col-span-8">
-        <LocationChart data={data} />
+        <MapChart data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
