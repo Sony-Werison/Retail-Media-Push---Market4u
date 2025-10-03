@@ -61,23 +61,22 @@ export function GenderChart({ data }: GenderChartProps) {
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
-                    outerRadius={100}
+                    outerRadius={80}
                     paddingAngle={2}
                     labelLine={false}
-                    label={({ cx, cy, midAngle, outerRadius, percent, payload }) => {
-                        const radius = outerRadius * 1.25;
+                    label={({ cx, cy, midAngle, outerRadius, percent }) => {
+                        const radius = outerRadius * 1.35;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
                         const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                        const isDarkSlice = payload.fill === 'var(--color-Masculino)';
                         
                         return (
                           <text 
                             x={x} 
                             y={y} 
-                            fill={isDarkSlice ? 'hsl(var(--accent-foreground))' : 'hsl(var(--foreground))'}
+                            fill="hsl(var(--foreground))"
                             textAnchor={x > cx ? 'start' : 'end'} 
                             dominantBaseline="central"
-                            className="text-sm font-bold"
+                            className="text-sm font-semibold"
                           >
                             {`${(percent * 100).toFixed(1)}%`}
                           </text>
