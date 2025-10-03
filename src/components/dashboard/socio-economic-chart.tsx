@@ -60,7 +60,7 @@ export function SocioEconomicChart({ data }: SocioEconomicChartProps) {
                     <YAxis tickFormatter={(value) => `${value.toFixed(0)}%`}/>
                     <Tooltip
                         cursor={{fill: 'hsl(var(--muted))'}}
-                        content={<ChartTooltipContent indicator="dot" formatter={(value, name) => `${(value as number).toFixed(1)}%`}/>}
+                        content={<ChartTooltipContent indicator="dot" formatter={(value) => `${(value as number).toFixed(1)}%`} />}
                     />
                     <Bar dataKey="percentage" name="Percentual" radius={[4, 4, 0, 0]}>
                       {chartData.map((entry) => (

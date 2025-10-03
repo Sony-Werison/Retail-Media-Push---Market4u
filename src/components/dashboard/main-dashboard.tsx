@@ -75,15 +75,15 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
         />
       </div>
 
-      <div className="col-span-12 md:col-span-4">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <GenderChart data={filteredData} />
       </div>
       
-      <div className="col-span-12 md:col-span-4">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <AgeChart data={filteredData} />
       </div>
       
-      <div className="col-span-12 md:col-span-4">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4">
         <SocioEconomicChart data={filteredData} />
       </div>
 
