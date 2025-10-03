@@ -71,7 +71,7 @@ export function MapChart({ data }: MapChartProps) {
         <CardTitle>Distribuição Geográfica e Impacto</CardTitle>
         <CardDescription>Visualização dos PDXs. O raio de cada ponto representa o total de impactos.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0 -m-6 mt-0">
+      <CardContent className="flex-1 p-0">
         <MapContainer 
           scrollWheelZoom={true}
           wheelDebounceTime={150}
