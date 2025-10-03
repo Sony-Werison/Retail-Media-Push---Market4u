@@ -21,10 +21,11 @@ type MainDashboardProps = {
   filteredData: RowData[];
   onStateChange: (state: string) => void;
   onCityChange: (city: string) => void;
-  filters: { state: string; city: string };
+  onNeighborhoodChange: (neighborhood: string) => void;
+  filters: { state: string; city: string; neighborhood: string };
 };
 
-export function MainDashboard({ fullData, filteredData, onStateChange, onCityChange, filters }: MainDashboardProps) {
+export function MainDashboard({ fullData, filteredData, onStateChange, onCityChange, onNeighborhoodChange, filters }: MainDashboardProps) {
   
   const totalImpacts = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [filteredData]);
   const totalReach = useMemo(() => filteredData.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [filteredData]);
@@ -69,6 +70,7 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
           data={fullData}
           onStateChange={onStateChange}
           onCityChange={onCityChange}
+          onNeighborhoodChange={onNeighborhoodChange}
           filters={filters}
         />
       </div>

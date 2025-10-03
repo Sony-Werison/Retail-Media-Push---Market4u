@@ -10,11 +10,12 @@ type LocationFiltersProps = {
   data: RowData[];
   onStateChange: (state: string) => void;
   onCityChange: (city: string) => void;
-  filters: { state: string; city: string };
+  onNeighborhoodChange: (neighborhood: string) => void;
+  filters: { state: string; city: string; neighborhood: string };
 };
 
-export function LocationFilters({ data, onStateChange, onCityChange, filters }: LocationFiltersProps) {
-  const { states, cities } = useMemo(() => {
+export function LocationFilters({ data, onStateChange, onCityChange, onNeighborhoodChange, filters }: LocationFiltersProps) {
+  const { states, cities, neighborhoods } = useMemo(() => {
     const states = [...new Set(data.map(row => row.PDX_ESTADO).filter(Boolean))].sort();
     
     let cities: string[] = [];
@@ -26,16 +27,26 @@ export function LocationFilters({ data, onStateChange, onCityChange, filters }: 
           .filter(Boolean)
       )].sort();
     }
+
+    let neighborhoods: string[] = [];
+    if (filters.city && filters.city !== 'all') {
+      neighborhoods = [...new Set(
+        data
+          .filter(row => row.PDX_CIDADE === filters.city)
+          .map(row => row.PDX_BAIRRO)
+          .filter(Boolean)
+      )].sort();
+    }
     
-    return { states, cities };
-  }, [data, filters.state]);
+    return { states, cities, neighborhoods };
+  }, [data, filters.state, filters.city]);
 
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Filtro Geográfico</CardTitle>
         <CardDescription>
-          Selecione um estado e/ou cidade para filtrar os dados do dashboard.
+          Selecione para filtrar os dados do dashboard.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -67,6 +78,23 @@ export function LocationFilters({ data, onStateChange, onCityChange, filters }: 
               {cities.map(city => (
                 <SelectItem key={city} value={city}>
                   {city}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="neighborhood-select">Bairro</Label>
+          <Select onValueChange={onNeighborhoodChange} value={filters.neighborhood} disabled={filters.city === 'all'}>
+            <SelectTrigger id="neighborhood-select">
+              <SelectValue placeholder="Todos os bairros" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os bairros</SelectItem>
+              {neighborhoods.map(neighborhood => (
+                <SelectItem key={neighborhood} value={neighborhood}>
+                  {neighborhood}
                 </SelectItem>
               ))}
             </SelectContent>

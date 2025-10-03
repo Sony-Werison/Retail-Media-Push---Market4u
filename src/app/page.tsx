@@ -20,6 +20,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [stateFilter, setStateFilter] = useState<string>('all');
   const [cityFilter, setCityFilter] = useState<string>('all');
+  const [neighborhoodFilter, setNeighborhoodFilter] = useState<string>('all');
 
 
   const handleDataUploaded = (
@@ -42,11 +43,18 @@ export default function Home() {
     setFileName('');
     setStateFilter('all');
     setCityFilter('all');
+    setNeighborhoodFilter('all');
   };
 
   const handleStateChange = (state: string) => {
     setStateFilter(state);
-    setCityFilter('all'); // Reseta a cidade quando o estado muda
+    setCityFilter('all');
+    setNeighborhoodFilter('all');
+  };
+
+  const handleCityChange = (city: string) => {
+    setCityFilter(city);
+    setNeighborhoodFilter('all');
   };
 
   const filteredData = useMemo(() => {
@@ -54,9 +62,10 @@ export default function Home() {
     return data.filter(row => {
       const stateMatch = stateFilter === 'all' || row.PDX_ESTADO === stateFilter;
       const cityMatch = cityFilter === 'all' || row.PDX_CIDADE === cityFilter;
-      return stateMatch && cityMatch;
+      const neighborhoodMatch = neighborhoodFilter === 'all' || row.PDX_BAIRRO === neighborhoodFilter;
+      return stateMatch && cityMatch && neighborhoodMatch;
     });
-  }, [data, stateFilter, cityFilter]);
+  }, [data, stateFilter, cityFilter, neighborhoodFilter]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -76,8 +85,9 @@ export default function Home() {
             fullData={data}
             filteredData={filteredData}
             onStateChange={handleStateChange}
-            onCityChange={setCityFilter}
-            filters={{ state: stateFilter, city: cityFilter }}
+            onCityChange={handleCityChange}
+            onNeighborhoodChange={setNeighborhoodFilter}
+            filters={{ state: stateFilter, city: cityFilter, neighborhood: neighborhoodFilter }}
           />
         )}
       </main>
