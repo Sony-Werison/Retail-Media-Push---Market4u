@@ -2,10 +2,11 @@
 
 import { useState, useCallback } from "react";
 import Papa from "papaparse";
+import * as XLSX from "xlsx";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UploadCloud, Loader2, FileCheck2 } from "lucide-react";
+import { UploadCloud, Loader2 } from "lucide-react";
 import { cn, parseCountValue } from "@/lib/utils";
 import { RowData } from "@/lib/types";
 
@@ -16,18 +17,68 @@ type DataUploadProps = {
   isLoading: boolean;
 };
 
+const validFileTypes = [
+    "text/csv",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+];
+
 export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }: DataUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
 
+  const handleData = (data: any[], csvString: string, fileName: string) => {
+    try {
+      const parsedData = data.map((row: any): RowData => {
+        const requiredKeys = ['PDX_LAT', 'PDX_LNG'];
+        for(const key of requiredKeys) {
+            if(!(key in row)) throw new Error(`Missing required column: ${key}`);
+        }
+
+        return {
+          ...row,
+          PDX_LAT: parseFloat(String(row.PDX_LAT).replace(',', '.')),
+          PDX_LNG: parseFloat(String(row.PDX_LNG).replace(',', '.')),
+          'Alcance Geral Target': parseCountValue(row['Alcance Geral Target']),
+          'Frequência Média': parseFloat(String(row['Frequência Média']).replace(',', '.')) || 0,
+          'Impactos Gerais': parseCountValue(row['Impactos Gerais']),
+          'Gênero (Masculino)': parseCountValue(row['Gênero (Masculino)']),
+          'Gênero (Feminino)': parseCountValue(row['Gênero (Feminino)']),
+          'Faixa Etária (18_24)': parseCountValue(row['Faixa Etária (18_24)']),
+          'Faixa Etária (25_29)': parseCountValue(row['Faixa Etária (25_29)']),
+          'Faixa Etária (30_39)': parseCountValue(row['Faixa Etária (30_39)']),
+          'Faixa Etária (40_49)': parseCountValue(row['Faixa Etária (40_49)']),
+          'Faixa Etária (50_59)': parseCountValue(row['Faixa Etária (50_59)']),
+          'Faixa Etária (60_69)': parseCountValue(row['Faixa Etária (60_69)']),
+          'Faixa Etária (70+)': parseCountValue(row['Faixa Etária (70+)']),
+          'Nível Socioeconômico (A)': parseCountValue(row['Nível Socioeconômico (A)']),
+          'Nível Socioeconômico (B)': parseCountValue(row['Nível Socioeconômico (B)']),
+          'Nível Socioeconômico (C)': parseCountValue(row['Nível Socioeconômico (C)']),
+          'Nível Socioeconômico (D)': parseCountValue(row['Nível Socioeconômico (D)']),
+          'Nível Socioeconômico (E)': parseCountValue(row['Nível Socioeconômico (E)']),
+          'Plataforma (ios)': parseCountValue(row['Plataforma (ios)']),
+          'Plataforma (Android)': parseCountValue(row['Plataforma (Android)']),
+        };
+      });
+      onDataUploaded(parsedData, csvString, fileName);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Data Processing Error",
+        description: error.message || "Could not process the file data. Please check the file format.",
+      });
+      onError();
+    }
+  };
+
   const processFile = useCallback((file: File) => {
     if (!file) return;
 
-    if (file.type !== "text/csv") {
+    if (!validFileTypes.includes(file.type)) {
       toast({
         variant: "destructive",
         title: "Invalid File Type",
-        description: "Please upload a valid CSV file.",
+        description: "Please upload a valid CSV or XLSX file.",
       });
       onError();
       return;
@@ -36,67 +87,40 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
     setIsLoading(true);
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-        const csvString = e.target?.result as string;
-        Papa.parse<any>(csvString, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            if (results.errors.length > 0) {
-              toast({
-                variant: "destructive",
-                title: "Error Parsing CSV",
-                description: results.errors.map(e => e.message).join(', '),
-              });
-              onError();
-              return;
-            }
-
-            try {
-              const parsedData = results.data.map((row: any): RowData => {
-                const requiredKeys = ['PDX_LAT', 'PDX_LNG'];
-                for(const key of requiredKeys) {
-                    if(!(key in row)) throw new Error(`Missing required column: ${key}`);
+    
+    if (file.type === "text/csv") {
+        reader.onload = (e) => {
+            const csvString = e.target?.result as string;
+            Papa.parse<any>(csvString, {
+              header: true,
+              skipEmptyLines: true,
+              complete: (results) => {
+                if (results.errors.length > 0) {
+                  toast({
+                    variant: "destructive",
+                    title: "Error Parsing CSV",
+                    description: results.errors.map(e => e.message).join(', '),
+                  });
+                  onError();
+                  return;
                 }
-
-                return {
-                  ...row,
-                  PDX_LAT: parseFloat(row.PDX_LAT.replace(',', '.')),
-                  PDX_LNG: parseFloat(row.PDX_LNG.replace(',', '.')),
-                  'Alcance Geral Target': parseCountValue(row['Alcance Geral Target']),
-                  'Frequência Média': parseFloat(String(row['Frequência Média']).replace(',', '.')) || 0,
-                  'Impactos Gerais': parseCountValue(row['Impactos Gerais']),
-                  'Gênero (Masculino)': parseCountValue(row['Gênero (Masculino)']),
-                  'Gênero (Feminino)': parseCountValue(row['Gênero (Feminino)']),
-                  'Faixa Etária (18_24)': parseCountValue(row['Faixa Etária (18_24)']),
-                  'Faixa Etária (25_29)': parseCountValue(row['Faixa Etária (25_29)']),
-                  'Faixa Etária (30_39)': parseCountValue(row['Faixa Etária (30_39)']),
-                  'Faixa Etária (40_49)': parseCountValue(row['Faixa Etária (40_49)']),
-                  'Faixa Etária (50_59)': parseCountValue(row['Faixa Etária (50_59)']),
-                  'Faixa Etária (60_69)': parseCountValue(row['Faixa Etária (60_69)']),
-                  'Faixa Etária (70+)': parseCountValue(row['Faixa Etária (70+)']),
-                  'Nível Socioeconômico (A)': parseCountValue(row['Nível Socioeconômico (A)']),
-                  'Nível Socioeconômico (B)': parseCountValue(row['Nível Socioeconômico (B)']),
-                  'Nível Socioeconômico (C)': parseCountValue(row['Nível Socioeconômico (C)']),
-                  'Nível Socioeconômico (D)': parseCountValue(row['Nível Socioeconômico (D)']),
-                  'Nível Socioeconômico (E)': parseCountValue(row['Nível Socioeconômico (E)']),
-                  'Plataforma (ios)': parseCountValue(row['Plataforma (ios)']),
-                  'Plataforma (Android)': parseCountValue(row['Plataforma (Android)']),
-                };
-              });
-              onDataUploaded(parsedData, csvString, file.name);
-            } catch (error: any) {
-              toast({
-                variant: "destructive",
-                title: "Data Processing Error",
-                description: error.message || "Could not process the CSV data. Please check the file format.",
-              });
-              onError();
-            }
-          },
-        });
-    };
-    reader.readAsText(file);
+                handleData(results.data, csvString, file.name);
+              },
+            });
+        };
+        reader.readAsText(file);
+    } else { // Handle XLSX
+        reader.onload = (e) => {
+            const arrayBuffer = e.target?.result;
+            const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            const csvString = XLSX.utils.sheet_to_csv(worksheet);
+            handleData(json, csvString, file.name);
+        };
+        reader.readAsArrayBuffer(file);
+    }
 
   }, [onDataUploaded, onError, toast, setIsLoading]);
 
@@ -128,7 +152,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
     <Card className="w-full text-center">
       <CardHeader>
         <CardTitle>Upload Your Data</CardTitle>
-        <CardDescription>Drag and drop your CSV file here or click to browse.</CardDescription>
+        <CardDescription>Drag and drop your CSV or XLSX file here or click to browse.</CardDescription>
       </CardHeader>
       <CardContent>
         <div
@@ -153,12 +177,12 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
                 <p className="text-muted-foreground">
                     <span className="text-primary font-semibold">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-xs text-muted-foreground">CSV files only</p>
+                <p className="text-xs text-muted-foreground">CSV or XLSX files only</p>
                 <input
                     id="file-upload"
                     type="file"
                     className="sr-only"
-                    accept=".csv"
+                    accept=".csv,.xlsx,.xls"
                     onChange={(e) => e.target.files && processFile(e.target.files[0])}
                 />
                  <Button asChild variant="outline" size="sm">
