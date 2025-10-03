@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { RowData, DemographicCategory } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-
-// Leaflet's default icon doesn't work well with React, so we need a workaround
 import L from 'leaflet';
+
+// Fix for default Leaflet icon path issue with webpack
 if (typeof window !== 'undefined') {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  });
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    });
 }
 
 
@@ -49,39 +49,23 @@ const getDominantCategory = (row: RowData, category: DemographicCategory): strin
 
 export function GeoMap({ data }: GeoMapProps) {
   const [colorCategory, setColorCategory] = useState<DemographicCategory>("Faixa Etária");
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+  
   const center = useMemo(() => {
     if (data.length === 0) return { lat: -23.5505, lng: -46.6333 };
-    const { latSum, lngSum } = data.reduce(
+    const validCoords = data.filter(d => typeof d.PDX_LAT === 'number' && typeof d.PDX_LNG === 'number' && !isNaN(d.PDX_LAT) && !isNaN(d.PDX_LNG));
+    if (validCoords.length === 0) return { lat: -23.5505, lng: -46.6333 };
+    
+    const { latSum, lngSum } = validCoords.reduce(
       ({ latSum, lngSum }, row) => ({ latSum: latSum + row.PDX_LAT, lngSum: lngSum + row.PDX_LNG }),
       { latSum: 0, lngSum: 0 }
     );
-    return { lat: latSum / data.length, lng: lngSum / data.length };
+    return { lat: latSum / validCoords.length, lng: lngSum / validCoords.length };
   }, [data]);
   
 
   const categoryMap = colorCategory === 'Faixa Etária' ? ageRanges : socioEconomicLevels;
   const colorScale = colors[colorCategory];
   const colorMapping = Object.fromEntries(categoryMap.map((key, i) => [key, colorScale[i % colorScale.length]]));
-
-  if (!isClient) {
-    return (
-      <Card className="h-full flex flex-col">
-        <CardHeader>
-          <CardTitle>Visualização Geográfica</CardTitle>
-          <CardDescription>Carregando mapa...</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1 flex items-center justify-center">
-            <div className="animate-pulse rounded-lg bg-muted w-full h-full"></div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="h-full flex flex-col">
@@ -107,6 +91,9 @@ export function GeoMap({ data }: GeoMapProps) {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {data.map((row) => {
+                  if (typeof row.PDX_LAT !== 'number' || typeof row.PDX_LNG !== 'number' || isNaN(row.PDX_LAT) || isNaN(row.PDX_LNG)) {
+                    return null;
+                  }
                   const dominantCategory = getDominantCategory(row, colorCategory);
                   const color = colorMapping[dominantCategory];
                   return (
@@ -120,7 +107,7 @@ export function GeoMap({ data }: GeoMapProps) {
                         <div className="p-1 max-w-xs">
                           <h3 className="font-bold text-base mb-1">{row.NOME}</h3>
                           <p className="text-sm text-muted-foreground">{row.PDX_ENDERECO}, {row.PDX_NUMERO}</p>
-                          <p className="text-sm mt-2"><strong>{colorCategory} Dominante:</strong> {getDominantCategory(row, colorCategory).replace(`${colorCategory} `, '').replace(/_/g, '-').replace('Nível Socioeconômico', 'SEC')}</p>
+                          <p className="text-sm mt-2"><strong>{colorCategory} Dominante:</strong> {getDominantCategory(row, colorCategory).replace(`${colorCategory} `, '').replace(/_/g, '-').replace('()', '').replace('Nível Socioeconômico', 'SEC')}</p>
                         </div>
                       </Popup>
                     </CircleMarker>

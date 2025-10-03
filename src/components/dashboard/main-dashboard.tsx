@@ -2,11 +2,27 @@ import type { RowData } from "@/lib/types";
 import { AIAssistant } from "./ai-insights";
 import { AgeChart } from "./age-chart";
 import { GenderChart } from "./gender-chart";
-import { GeoMap } from "./geo-map";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { PlatformChart } from "./platform-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import dynamic from "next/dynamic";
+import { Skeleton } from "../ui/skeleton";
+
+const GeoMap = dynamic(() => import("./geo-map").then((mod) => mod.GeoMap), {
+  ssr: false,
+  loading: () => (
+    <Card className="h-full flex flex-col">
+      <CardHeader>
+        <CardTitle>Visualização Geográfica</CardTitle>
+        <CardDescription>Carregando mapa...</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1">
+        <Skeleton className="w-full h-full rounded-lg" />
+      </CardContent>
+    </Card>
+  ),
+});
 
 type MainDashboardProps = {
   data: RowData[];
