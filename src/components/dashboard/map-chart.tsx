@@ -79,7 +79,7 @@ export function MapChart({ data }: MapChartProps) {
           style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
           bounds={bounds.isValid() ? bounds : undefined}
           boundsOptions={{padding: [50,50]}}
-          className="h-full w-full"
+          className="h-full w-full leaflet-map-pane-recessed"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
