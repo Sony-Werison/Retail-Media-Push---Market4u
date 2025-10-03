@@ -22,8 +22,8 @@ const chartConfig = {
 };
 
 export function GenderChart({ data }: GenderChartProps) {
-  const chartData = useMemo(() => {
-    if (!data) return [];
+  const { chartData, totalValue } = useMemo(() => {
+    if (!data) return { chartData: [], totalValue: 0 };
     
     const totals = data.reduce(
       (acc, row) => {
@@ -34,10 +34,14 @@ export function GenderChart({ data }: GenderChartProps) {
       { male: 0, female: 0 }
     );
 
-    return [
+    const totalValue = totals.male + totals.female;
+
+    const chartData = [
         { name: 'Masculino', value: totals.male, fill: 'var(--color-Masculino)' },
         { name: 'Feminino', value: totals.female, fill: 'var(--color-Feminino)' }
     ];
+
+    return { chartData, totalValue };
   }, [data]);
 
   return (
@@ -54,7 +58,14 @@ export function GenderChart({ data }: GenderChartProps) {
               <PieChart>
                   <Tooltip
                       cursor={{fill: 'hsl(var(--muted))'}}
-                      content={<ChartTooltipContent indicator="dot" nameKey="name" />}
+                      content={<ChartTooltipContent 
+                        indicator="dot" 
+                        nameKey="name"
+                        formatter={(value, name, item) => {
+                          const percentage = totalValue > 0 ? (item.payload.value / totalValue) * 100 : 0;
+                          return `${percentage.toFixed(1)}%`;
+                        }}
+                      />}
                   />
                   <Pie
                     data={chartData}
@@ -75,7 +86,7 @@ export function GenderChart({ data }: GenderChartProps) {
                           <text 
                             x={x} 
                             y={y} 
-                            fill="hsl(var(--card))"
+                            fill="hsl(var(--card-foreground))"
                             textAnchor="middle"
                             dominantBaseline="central"
                             className="text-sm font-bold"
