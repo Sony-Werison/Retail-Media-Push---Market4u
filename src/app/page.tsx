@@ -5,25 +5,6 @@ import { DataUpload } from "@/components/dashboard/data-upload";
 import { MainDashboard } from "@/components/dashboard/main-dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import type { RowData } from "@/lib/types";
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-
-const GeoMap = dynamic(() => import("@/components/dashboard/geo-map").then((mod) => mod.GeoMap), {
-  ssr: false,
-  loading: () => (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle>Visualização Geográfica</CardTitle>
-        <CardDescription>Carregando mapa...</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <Skeleton className="w-full h-full rounded-lg" />
-      </CardContent>
-    </Card>
-  ),
-});
-
 
 export default function Home() {
   const [data, setData] = useState<RowData[] | null>(null);
@@ -69,7 +50,7 @@ export default function Home() {
             />
           </div>
         ) : (
-          <MainDashboard data={data} csvString={csvString} GeoMapComponent={GeoMap} />
+          <MainDashboard data={data} csvString={csvString} />
         )}
       </main>
     </div>

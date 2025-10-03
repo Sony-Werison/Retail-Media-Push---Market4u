@@ -7,15 +7,15 @@ import { TopLists } from "./top-lists";
 import { PlatformChart } from "./platform-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React from "react";
+import { LocationChart } from "./location-chart";
 
 
 type MainDashboardProps = {
   data: RowData[];
   csvString: string;
-  GeoMapComponent: React.ComponentType<{ data: RowData[] }>;
 };
 
-export function MainDashboard({ data, csvString, GeoMapComponent }: MainDashboardProps) {
+export function MainDashboard({ data, csvString }: MainDashboardProps) {
 
   const totalImpacts = data.reduce((sum, row) => sum + row['Impactos Gerais'], 0);
   const totalReach = data.reduce((sum, row) => sum + row['Alcance Geral Target'], 0);
@@ -53,7 +53,7 @@ export function MainDashboard({ data, csvString, GeoMapComponent }: MainDashboar
       </Card>
 
       <div className="col-span-12 lg:col-span-8 row-span-2">
-        <GeoMapComponent data={data} />
+        <LocationChart data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">
