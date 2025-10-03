@@ -30,10 +30,9 @@ function cleanItemName(name: string): string {
 
 export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN = 5, translationMap?: { [key: string]: string }): { topItems: { name: string; value: number; percentage: number }[], totalCount: number } => {
   const counts = new Map<string, number>();
-  let totalCount = 0;
+  let totalValue = 0;
 
   data.forEach(row => {
-    let rowHasValidEntry = false;
     keys.forEach(key => {
       const rawItem = row[key] as string;
       if (rawItem && rawItem.trim() !== '' && rawItem.trim().toLowerCase() !== 'n/a' && rawItem.trim() !== '-') {
@@ -45,31 +44,27 @@ export const aggregateAndSort = (data: RowData[], keys: (keyof RowData)[], topN 
         }
 
         if (finalName) {
-          const currentCount = (counts.get(finalName) || 0) + 1;
-          counts.set(finalName, currentCount);
-          rowHasValidEntry = true;
+          counts.set(finalName, (counts.get(finalName) || 0) + 1);
+          totalValue++;
         }
       }
     });
-    if(rowHasValidEntry) {
-        totalCount++;
-    }
   });
   
-  if (totalCount === 0) {
-    totalCount = 1; // Avoid division by zero
+  if (totalValue === 0) {
+    totalValue = 1; // Avoid division by zero
   }
 
   const sortedItems = Array.from(counts.entries())
     .map(([name, value]) => ({ 
         name, 
         value,
-        percentage: (value / totalCount) * 100
+        percentage: (value / totalValue) * 100
     }))
     .sort((a, b) => b.value - a.value);
 
   return {
     topItems: sortedItems.slice(0, topN),
-    totalCount: totalCount
+    totalCount: totalValue
   };
 };

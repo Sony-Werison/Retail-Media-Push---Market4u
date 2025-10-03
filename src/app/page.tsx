@@ -17,31 +17,26 @@ const MainDashboard = dynamic(
 
 export default function Home() {
   const [data, setData] = useState<RowData[] | null>(null);
-  const [csvString, setCsvString] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDataUploaded = (
     parsedData: RowData[],
-    rawCsv: string,
     name: string
   ) => {
     setData(parsedData);
-    setCsvString(rawCsv);
     setFileName(name);
     setIsLoading(false);
   };
 
   const handleError = () => {
     setData(null);
-    setCsvString('');
     setFileName('');
     setIsLoading(false);
   };
 
   const handleReset = () => {
     setData(null);
-    setCsvString('');
     setFileName('');
   };
 
@@ -59,7 +54,7 @@ export default function Home() {
             />
           </div>
         ) : (
-          <MainDashboard data={data} csvString={csvString} />
+          <MainDashboard data={data} />
         )}
       </main>
     </div>

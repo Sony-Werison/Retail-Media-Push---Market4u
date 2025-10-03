@@ -1,21 +1,19 @@
 import type { RowData } from "@/lib/types";
-import { AIAssistant } from "./ai-insights";
 import { AgeChart } from "./age-chart";
 import { GenderChart } from "./gender-chart";
 import { SocioEconomicChart } from "./socio-economic-chart";
 import { TopLists } from "./top-lists";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import React, { useMemo } from "react";
-import { LocationChart } from "./location-chart";
+import { GeoMap } from "./geo-map";
 import { parseValue } from "@/lib/utils";
 import { interestTranslations, appUsageTranslations } from "@/lib/translations";
 
 type MainDashboardProps = {
   data: RowData[];
-  csvString: string;
 };
 
-export function MainDashboard({ data, csvString }: MainDashboardProps) {
+export function MainDashboard({ data }: MainDashboardProps) {
   
   const totalImpacts = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Impactos Gerais']), 0), [data]);
   const totalReach = useMemo(() => data.reduce((sum, row) => sum + parseValue(row['Alcance Geral Target']), 0), [data]);
@@ -52,11 +50,7 @@ export function MainDashboard({ data, csvString }: MainDashboardProps) {
       </Card>
 
       <div className="col-span-12 lg:col-span-8 row-span-2">
-        <LocationChart data={data} />
-      </div>
-
-      <div className="col-span-12 md:col-span-6 lg:col-span-4">
-        <AIAssistant csvData={csvString} />
+        <GeoMap data={data} />
       </div>
 
       <div className="col-span-12 md:col-span-6 lg:col-span-4">

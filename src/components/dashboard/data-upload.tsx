@@ -11,7 +11,7 @@ import { cn, parseValue } from "@/lib/utils";
 import { RowData } from "@/lib/types";
 
 type DataUploadProps = {
-  onDataUploaded: (data: RowData[], csvString: string, fileName: string) => void;
+  onDataUploaded: (data: RowData[], fileName: string) => void;
   onError: () => void;
   setIsLoading: (isLoading: boolean) => void;
   isLoading: boolean;
@@ -27,7 +27,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
   const [isDragging, setIsDragging] = useState(false);
   const { toast } = useToast();
 
-  const handleData = (data: any[], csvString: string, fileName: string) => {
+  const handleData = (data: any[], fileName: string) => {
     try {
       const parsedData = data.map((row: any): RowData => {
         const requiredKeys = ['PDX_LAT', 'PDX_LNG'];
@@ -53,7 +53,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
         
         return newRow as RowData;
       });
-      onDataUploaded(parsedData, csvString, fileName);
+      onDataUploaded(parsedData, fileName);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -97,7 +97,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
                   onError();
                   return;
                 }
-                handleData(results.data, csvString, file.name);
+                handleData(results.data, file.name);
               },
             });
         };
@@ -109,8 +109,7 @@ export function DataUpload({ onDataUploaded, onError, setIsLoading, isLoading }:
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const json = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null });
-            const csvString = XLSX.utils.sheet_to_csv(worksheet);
-            handleData(json, csvString, file.name);
+            handleData(json, file.name);
         };
         reader.readAsArrayBuffer(file);
     }
