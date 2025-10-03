@@ -42,7 +42,7 @@ export function GeoMap({ data }: GeoMapProps) {
   const [colorCategory, setColorCategory] = useState<DemographicCategory>("Faixa Etária");
   
   const center = useMemo(() => {
-    if (data.length === 0) return { lat: -23.5505, lng: -46.6333 };
+    if (!data || data.length === 0) return { lat: -23.5505, lng: -46.6333 };
     const validCoords = data.filter(d => typeof d.PDX_LAT === 'number' && typeof d.PDX_LNG === 'number' && !isNaN(d.PDX_LAT) && !isNaN(d.PDX_LNG));
     if (validCoords.length === 0) return { lat: -23.5505, lng: -46.6333 };
     
