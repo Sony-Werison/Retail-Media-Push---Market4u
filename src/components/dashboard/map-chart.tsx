@@ -72,7 +72,7 @@ export function MapChart({ data }: MapChartProps) {
         <CardTitle>Distribuição Geográfica e Impacto</CardTitle>
         <CardDescription>Visualização dos PDXs. O raio de cada ponto representa o total de impactos.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 p-0">
+      <CardContent className="flex-1 p-0 relative z-0">
         <MapContainer 
           scrollWheelZoom={true}
           wheelDebounceTime={150}
@@ -80,7 +80,6 @@ export function MapChart({ data }: MapChartProps) {
           style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
           bounds={bounds.isValid() ? bounds : undefined}
           boundsOptions={{padding: [20,20]}}
-          className="h-full w-full leaflet-map-pane-recessed"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
