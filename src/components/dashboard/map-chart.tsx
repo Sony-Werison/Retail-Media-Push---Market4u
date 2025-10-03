@@ -70,40 +70,42 @@ export function MapChart({ data }: MapChartProps) {
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Distribuição Geográfica e Impacto</CardTitle>
-        <CardDescription>Visualização dos PDXs. O raio de cada ponto representa o total de impactos.</CardDescription>
+        <CardDescription>Visualização de pontos no mapa</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 p-0 relative z-0">
-        <MapContainer 
-          scrollWheelZoom={true}
-          wheelDebounceTime={150}
-          wheelPxPerZoomLevel={120}
-          style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
-          bounds={bounds.isValid() ? bounds : undefined}
-          boundsOptions={{padding: [20,20]}}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {points.map((point, idx) => (
-            <CircleMarker 
-              key={idx} 
-              center={[point.lat, point.lng]}
-              radius={point.radius}
-              pathOptions={{ 
-                color: 'hsl(var(--primary))',
-                fillColor: 'hsl(var(--primary))', 
-                fillOpacity: 0.6 
-              }}
-            >
-              <Tooltip>
-                <strong>{point.name}</strong><br/>
-                {point.address}<br/>
-                Impactos: {point.impacts.toLocaleString('pt-BR')}
-              </Tooltip>
-            </CircleMarker>
-          ))}
-        </MapContainer>
+      <CardContent className="flex-1 p-0 relative">
+        <div className="z-0 h-full w-full">
+          <MapContainer 
+            scrollWheelZoom={true}
+            wheelDebounceTime={150}
+            wheelPxPerZoomLevel={120}
+            style={{ height: '100%', width: '100%', borderRadius: "0 0 0.5rem 0.5rem", minHeight: '425px' }}
+            bounds={bounds.isValid() ? bounds : undefined}
+            boundsOptions={{padding: [50,50]}}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {points.map((point, idx) => (
+              <CircleMarker 
+                key={idx} 
+                center={[point.lat, point.lng]}
+                radius={point.radius}
+                pathOptions={{ 
+                  color: 'hsl(var(--primary))',
+                  fillColor: 'hsl(var(--primary))', 
+                  fillOpacity: 0.6 
+                }}
+              >
+                <Tooltip>
+                  <strong>{point.name}</strong><br/>
+                  {point.address}<br/>
+                  Impactos: {point.impacts.toLocaleString('pt-BR')}
+                </Tooltip>
+              </CircleMarker>
+            ))}
+          </MapContainer>
+        </div>
       </CardContent>
     </Card>
   );
