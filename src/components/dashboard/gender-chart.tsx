@@ -77,6 +77,10 @@ export function GenderChart({ data }: GenderChartProps) {
                     outerRadius={90}
                     paddingAngle={2}
                     labelLine={false}
+                    isAnimationActive={true}
+                    animationBegin={0}
+                    animationDuration={800}
+                    animationEasing="ease-out"
                     label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
                         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                         const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));

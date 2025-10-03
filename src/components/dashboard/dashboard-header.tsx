@@ -22,17 +22,9 @@ export function DashboardHeader({ fileName, hasData }: DashboardHeaderProps) {
     if (dashboardElement) {
       toast({ title: 'Exportando para PDF...', description: 'Aguarde um momento.' });
       
-      // Use um seletor mais específico se o mapa estiver causando problemas
       html2canvas(dashboardElement, { 
         scale: 2,
-        useCORS: true, // Pode ajudar com imagens de tiles do mapa
-        // Abaixo, algumas opções que podem ajudar a renderizar melhor
-        // Tente descomentar se a qualidade ainda não for boa
-        // logging: true, 
-        // scrollX: -window.scrollX,
-        // scrollY: -window.scrollY,
-        // windowWidth: dashboardElement.scrollWidth,
-        // windowHeight: dashboardElement.scrollHeight
+        useCORS: true,
       }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF({
