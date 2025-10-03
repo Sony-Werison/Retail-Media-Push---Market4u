@@ -13,7 +13,7 @@ type GenderChartProps = {
 const chartConfig = {
   Masculino: {
     label: "Masculino",
-    color: "hsl(var(--accent))",
+    color: "hsl(var(--primary))",
   },
   Feminino: {
     label: "Feminino",
