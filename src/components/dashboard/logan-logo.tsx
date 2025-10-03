@@ -10,10 +10,11 @@ export function LoganLogo({ className }: { className?: string }) {
       <text 
         x="0" 
         y="30" 
-        fontFamily="Arial, sans-serif" 
+        fontFamily="'Inter', sans-serif"
         fontSize="35" 
-        fontWeight="bold" 
+        fontWeight="900" 
         fill="currentColor"
+        letterSpacing="0.025em"
       >
         LOGAN
       </text>

@@ -62,7 +62,7 @@ export function MainDashboard({ fullData, filteredData, onStateChange, onCityCha
       </Card>
 
       <div className="col-span-12 lg:col-span-8">
-         <MapChart data={filteredData} />
+        <MapChart data={filteredData} />
       </div>
       
       <div className="col-span-12 lg:col-span-4">
