@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Logan Dashboard',
+  title: 'Retail Media Push - powered by Market4u',
   description: 'Data analytics dashboard for Logan.',
 };
 
