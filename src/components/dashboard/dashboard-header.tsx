@@ -43,7 +43,7 @@ export function DashboardHeader({ fileName, hasData }: DashboardHeaderProps) {
   };
   
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between h-16 px-4 bg-card border-b border-t-4 border-primary shrink-0 sm:px-6">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-card border-b border-t-4 border-primary shrink-0 sm:px-6">
       <div className="flex items-center gap-4">
         <LoganLogo className="h-6" />
         <div>
